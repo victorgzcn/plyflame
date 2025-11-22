@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile App Screenshot - Weather Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .phone-mockup {
+            width: 350px;
+            height: 700px;
+            background: #000;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phone-inner {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-time {
+            flex: 1;
+            text-align: center;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .screen-content {
+            height: calc(100% - 44px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chat-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .chat-header {
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+            color: #000;
+            backdrop-filter: blur(10px);
+        }
+
+        .messages-container {
+            height: calc(100% - 110px);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 50%;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            line-height: 1.4;
+            position: relative;
+            animation: messageSlide 0.3s ease-out;
+            pointer-events: auto;
+        }
+
+        .message.received {
+            background: rgba(229, 231, 235, 0.9);
+            color: #374151;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.sent {
+            background: rgba(99, 102, 241, 0.9);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .input-area {
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .message-input {
+            flex: 1;
+            height: 36px;
+            border: none;
+            background: #f3f4f6;
+            border-radius: 18px;
+            padding: 0 16px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .send-button {
+            width: 36px;
+            height: 36px;
+            background: #6366f1;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .send-button:hover {
+            background: #5a5fef;
+        }
+
+        .ad-section {
+            background: #6366f1;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .ad-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .ad-email {
+            font-size: 16px;
+            color: #e0e7ff;
+        }
+
+        .ad-email:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .qr-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .qr-code {
+            width: 120px;
+            height: 120px;
+            background: #f8fafc;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .qr-text {
+            text-align: center;
+        }
+
+        .qr-text h3 {
+            color: #6366f1;
+            margin-bottom: 8px;
+        }
+
+        .qr-text p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-typing {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 12px 16px;
+            background: rgba(229, 231, 235, 0.9);
+            border-radius: 20px;
+            align-self: flex-start;
+            max-width: 70px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #6b7280;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                gap: 20px;
+            }
+            
+            .phone-mockup {
+                width: 320px;
+                height: 650px;
+            }
+            
+            .qr-section {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .phone-mockup {
+                width: 300px;
+                height: 600px;
+            }
+            
+            .messages-container {
+                margin-top: 40%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Phone Mockup -->
+        <div class="phone-mockup">
+            <div class="phone-inner">
+                <div class="status-bar">
+                    <div class="status-time">9:41</div>
+                    <div class="status-icons">
+                        <span>📶</span>
+                        <span>🔋</span>
+                    </div>
+                </div>
+                
+                <div class="screen-content">
+                    <!-- Video Background -->
+                    <div class="video-container">
+                        <video autoplay loop muted playsinline>
+                            <source src="https://cdn.pixabay.com/video/2015/08/12/368-136082428_medium.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    
+                    <!-- Chat Overlay -->
+                    <div class="chat-overlay">
+                        <div class="chat-header">
+                            Weather Report
+                        </div>
+                        
+                        <div class="messages-container" id="messagesContainer">
+                            <!-- Messages will be dynamically added here -->
+                            <div class="message received">
+                                Hey,lookin’ up—clouds rollin’, wind blowin’, gulls low. Rain comin’? Surf tomorrow?🏄🏿
+                                <div class="message-time">9:42 AM</div>
+                            </div>
+                            
+                            <div class="message sent">
+                                Clouds angry, wind howlin’—rain’s comin’. Foam high. Too rough?☀️
+                                <div class="message-time">9:42 AM</div>
+                            </div>
+                            
+                            <div class="message received">
+                                Red sunset = calm tomorrow.🏄🏿
+                                <div class="message-time">9:43 AM</div>
+                            </div>
+                            
+                            <div class="message sent">
+                                But pine needles twistin’—north wind’s comin’. Maybe wait.☀️
+                                <div class="message-time">9:43 AM</div>
+                            </div>
+
+                            <div class="message received">
+                                Orion’s clear = smooth ocean. Moon’s halo = rain soon.🏄🏿
+                                <div class="message-time">9:42 AM</div>
+                            </div>
+                            
+                            <div class="message sent">
+                                Tides matter. Low tide = small waves. High tide = big swell.☀️
+                                <div class="message-time">9:42 AM</div>
+                            </div>
+                            
+                            <div class="message received">
+                                Spiderwebs wet = no rain; dry = wind.🏄🏿
+                                <div class="message-time">9:43 AM</div>
+                            </div>
+                            
+                            <div class="message sent">
+                                Surf’s better with full stomachs. Maybe tomorrow.☀️
+                                <div class="message-time">9:43 AM</div>
+                            </div>
+
+                            
+                            <div class="message-typing">
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="input-area">
+                            <input type="text" class="message-input" placeholder="Type a message..." id="messageInput">
+                            <button class="send-button" onclick="sendMessage()">
+                                ↑
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Code Section -->
+        <div class="qr-section">
+            
+                        <div class="qr-code">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A//victorgzcn.github.io/plyflame/weather.html" alt="QR Code" style="width: 100px; height: 100px;">
+                        </div>
+            <div class="qr-text">
+                <h3>SCAN TO VISIT</h3>
+                <p>Scan to get current and five days forcast weather report</p>
+            </div>
+        </div>
+
+        <!-- Advertising Section -->
+        <div class="ad-section">
+            <div class="ad-title">To advertise your brands</div>
+            <a href="mailto:marketing@plyflame.com" class="ad-email">
+                📧 marketing@plyflame.com
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Sample messages for demonstration
+        const sampleMessages = [
+            "This video feature is perfect for brand promotions!",
+            "Imagine your products showcased in this quality!",
+            "Engage your audience with stunning video content",
+            "Perfect platform for modern advertising",
+            "Reach millions of potential customers"
+        ];
+
+        let messageCount = 0;
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, 'sent');
+                input.value = '';
+                
+                // Auto-reply after 1 second
+                setTimeout(() => {
+                    const reply = sampleMessages[messageCount % sampleMessages.length];
+                    addMessage(reply, 'received');
+                    messageCount++;
+                }, 1000);
+            }
+        }
+
+        function addMessage(text, type) {
+            const container = document.getElementById('messagesContainer');
+            const typingIndicator = container.querySelector('.message-typing');
+            
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            messageDiv.innerHTML = `
+                ${text}
+                <div class="message-time">${timeString}</div>
+            `;
+            
+            container.appendChild(messageDiv);
+            
+            // Add typing indicator after new message
+            setTimeout(() => {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'message-typing';
+                typingDiv.innerHTML = `
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                `;
+                container.appendChild(typingDiv);
+                container.scrollTop = container.scrollHeight;
+            }, 500);
+            
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Allow sending message with Enter key
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Auto-add initial messages
+        setTimeout(() => {
+            addMessage("This platform supports high-quality video content!", 'received');
+        }, 2000);
+
+        setTimeout(() => {
+            addMessage("Perfect for showcasing your brand stories!", 'sent');
+        }, 4000);
+
+        // Video interaction
+        const video = document.querySelector('video');
+        video.addEventListener('click', function() {
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
+
+        console.log('Video Chat Interface Loaded');
+        console.log('Features:');
+        console.log('- Interactive messaging system');
+        console.log('- Video background support');
+        console.log('- Responsive mobile mockup');
+        console.log('- QR code section');
+        console.log('- Advertising contact information');
+    </script>
+</body>
+</html>
