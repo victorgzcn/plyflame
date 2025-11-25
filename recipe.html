@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Piedicolle Special Sauce</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+            background: #f7f2d8;
+        }
+        .recipe-header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgb(56, 111, 157);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .recipe-header h1 {
+            color: #e9a621;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .recipe-meta {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .meta-item {
+            background: #e8f5e8;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            color: #2c5530;
+        }
+        .header-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .content-section {
+            background: white;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #2c5530;
+            border-bottom: 3px solid #4caf50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .ingredients-list, .instructions-list {
+            list-style: none;
+            padding: 0;
+        }
+        .ingredients-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 25px;
+        }
+        .ingredients-list li:before {
+            content: "🍴";
+            position: absolute;
+            left: 0;
+        }
+        .instructions-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 40px;
+        }
+        .instructions-list li:before {
+            content: counter(step);
+            counter-increment: step;
+            position: absolute;
+            left: 0;
+            background: #4caf50;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .instructions-list {
+            counter-reset: step;
+        }
+        .process-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .nutrition-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: start;
+        }
+        .nutrition-info {
+            flex: 1;
+            min-width: 250px;
+        }
+        .nutrition-label {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+        }
+        .nutrition-label img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+        .qr-section {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .qr-section img {
+            width: 150px;
+            height: 150px;
+        }
+        @media (max-width: 600px) {
+            .recipe-meta {
+                flex-direction: column;
+                align-items: center;
+            }
+            .nutrition-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="recipe-header">
+        <h1>Piedicolle Special Sauce</h1>
+        <div class="recipe-meta">
+            <div class="meta-item">⏱️ Prep: 15 minutes</div>
+            <div class="meta-item">🍳 Cook: 15 minutes</div>
+            <div class="meta-item">👥 Serves: 2</div>
+        </div>
+        <img src="https://italianfoodforever.com/wp-content/uploads/2015/09/piedicollesauce3.jpg" alt="Piedicolle Special Sauce" class="header-image">
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📋 Ingredients</h2>
+        <ul class="ingredients-list">
+            <li>1 Pound Castelvetrano Olives, Pitted & Coarsely Chopped (See Notes Above)</li><li>2 Small Anchovies (Oil Packed, Not Salted)</li><li>2 Teaspoons Salted Capers, Rinsed Well</li><li>1 Garlic Clove, Peeled</li><li>Extra Virgin Olive Oil (About 1/2 Cup)</li><li>Salt & Pepper To Taste</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">👩‍🍳 Instructions</h2>
+        <img src="https://italianfoodforever.com/wp-content/uploads/2015/09/piedicollesauce5.jpg" alt="Preparation" class="process-image">
+        <ol class="instructions-list">
+            <li>Place the olives, anchovies, capers, and garlic in the bowl of a small food processor and pulse until well chopped.</li><li>Drizzle in the olive oil, and pulse until the sauce is well mixed but still has texture.</li><li>Season with salt and pepper and store in an airtight container in the refrigerator.</li>
+        </ol>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Nutrition Information</h2>
+        <div class="nutrition-section">
+            <div class="nutrition-info">
+                <h3>Per Serving:</h3>
+                <p><strong>Calories:</strong> 50</p>
+                <p><strong>Protein:</strong> 1g</p>
+                <p><strong>Carbs:</strong> 3g</p>
+                <p><strong>Fat:</strong> 5g</p>
+                <p><strong>Fiber:</strong> 1g</p>
+            </div>
+            <div class="nutrition-label">
+                <img src="https://victorgzcn.github.io/plyflame/nutrition.png" alt="Nutrition Facts">
+            </div>
+        </div>
+    </div>
+
+    <div class="qr-section">
+        <h3>Share this recipe</h3>
+        <p>Scan to download</p>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A//spark-scarer-713.notion.site/Recipe-22269283f335815da3f2fd8264e1ee4d?pvs=73" alt="QR Code">
+        <p style="margin-top: 10px; color: #666; font-size: 0.9em;">
+           <a href="https://victorgzcn.github.io/plyflame/piedicolle_special_sauce.html "></a>
+        </p>
+    </div>
+</body>
+</html>
