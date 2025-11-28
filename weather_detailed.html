@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Weather Widget</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .weather-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .section-title i {
+            margin-right: 15px;
+            color: #ffd700;
+        }
+
+        .weather-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .weather-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .weather-main-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .weather-details-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .location {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .weather-icon {
+            font-size: 4rem;
+            margin: 1rem 0;
+            color: #ffd700;
+        }
+
+        .temperature {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .condition {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .feels-like {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .weather-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .weather-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .weather-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .weather-item i {
+            font-size: 1.5rem;
+            width: 30px;
+            text-align: center;
+            color: #ffd700;
+        }
+
+        .weather-info {
+            flex: 1;
+        }
+
+        .weather-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 0.2rem;
+        }
+
+        .weather-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .sun-times {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sun-time {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .sun-time i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #ff6b6b;
+        }
+
+        .sunrise i {
+            color: #ffa502;
+        }
+
+        .sunset i {
+            color: #ff6b6b;
+        }
+
+        .uv-index {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .uv-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .uv-low { color: #2ed573; }
+        .uv-moderate { color: #ffa502; }
+        .uv-high { color: #ff4757; }
+        .uv-very-high { color: #5352ed; }
+        .uv-extreme { color: #3742fa; }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .loading i {
+            margin-right: 10px;
+        }
+
+        .error {
+            text-align: center;
+            padding: 2rem;
+            color: #ff6b6b;
+            font-size: 1.1rem;
+        }
+
+        .last-updated {
+            text-align: center;
+            margin-top: 1rem;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <section class="weather-section">
+        <div class="container">
+            <div class="header-date">
+                <i class="fas fa-clock"></i>
+                <span id="current-date-time">Loading...</span>
+            </div>
+            
+            <script>
+            function updateDateTime() {
+                const now = new Date();
+                const options = { 
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                };
+                document.getElementById('current-date-time').textContent = 
+                    now.toLocaleDateString('en-US', options);
+            }
+            
+            // Update immediately
+            updateDateTime();
+            
+            // Update every second
+            setInterval(updateDateTime, 1000);
+            </script>
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-cloud-sun"></i>
+                Detailed Weather Forecast
+            </h2>
+            
+            <div class="weather-container">
+                <!-- Main Weather Card -->
+                <div class="weather-main-card">
+                    <div class="location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="weather-location">Loading...</span>
+                    </div>
+                    
+                    <div class="weather-icon" id="weather-icon">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    
+                    <div class="temperature" id="weather-temperature">--°C</div>
+                    
+                    <div class="condition" id="weather-condition">Loading weather data...</div>
+                    
+                    <div class="feels-like" id="weather-feels-like">
+                        <i class="fas fa-temperature-low"></i>
+                        Feels like: <span id="feels-like-temp">--</span>°C
+                    </div>
+
+                    <!-- UV Index -->
+                    <div class="uv-index">
+                        <i class="fas fa-sun"></i>
+                        <div class="weather-label">UV Index</div>
+                        <div class="uv-value" id="uv-index">--</div>
+                        <div class="weather-label" id="uv-category">--</div>
+                    </div>
+                </div>
+
+                <!-- Detailed Weather Card -->
+                <div class="weather-details-card">
+                    <h3 style="text-align: center; margin-bottom: 1.5rem;">
+                        <i class="fas fa-info-circle"></i>
+                        Weather Details
+                    </h3>
+                    
+                    <div class="weather-grid">
+                        <!-- Humidity -->
+                        <div class="weather-item">
+                            <i class="fas fa-tint"></i>
+                            <div class="weather-info">
+                                <div class="weather-label">Humidity</div>
+                                <div class="weather-value" id="weather-humidity">--%</div>
+                            </div>
+                        </div>
+
+                        <!-- Wind -->
+                        <div class="weather-item">
+                            <i class="fas fa-wind"></i>
+                            <div class="weather-info">
+                                <div class="weather-label">Wind Speed</div>
+                                <div class="weather-value" id="weather-wind">-- m/s</div>
+                            </div>
+                        </div>
+
+                        <!-- Pressure -->
+                        <div class="weather-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <div class="weather-info">
+                                <div class="weather-label">Pressure</div>
+                                <div class="weather-value" id="weather-pressure">-- hPa</div>
+                            </div>
+                        </div>
+
+                        <!-- Visibility -->
+                        <div class="weather-item">
+                            <i class="fas fa-eye"></i>
+                            <div class="weather-info">
+                                <div class="weather-label">Visibility</div>
+                                <div class="weather-value" id="weather-visibility">-- meters</div>
+                            </div>
+                        </div>
+
+                        <!-- Cloud Coverage -->
+                        <div class="weather-item">
+                            <i class="fas fa-cloud"></i>
+                            <div class="weather-info">
+                                <div class="weather-label">Cloud Coverage</div>
+                                <div class="weather-value" id="weather-clouds">--%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sunrise & Sunset -->
+                    <div class="sun-times">
+                        <div class="sun-time sunrise">
+                            <i class="fas fa-sun"></i>
+                            <div class="weather-label">Sunrise</div>
+                            <div class="weather-value" id="weather-sunrise">--:--</div>
+                        </div>
+                        <div class="sun-time sunset">
+                            <i class="fas fa-moon"></i>
+                            <div class="weather-label">Sunset</div>
+                            <div class="weather-value" id="weather-sunset">--:--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="last-updated" id="last-updated">
+                Last updated: <span id="update-time">--</span>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            apiKey: '03c471b5488f5cf80ce8e0dac9a3c763', // Replace with your OpenWeatherMap API key
+            city: 'Guangzhou',
+            units: 'metric',
+            updateInterval: 10 * 60 * 1000 // 10 minutes
+        };
+
+        // Weather condition to icon mapping
+        const WEATHER_ICONS = {
+            'clear': 'fa-sun',
+            'clouds': 'fa-cloud',
+            'rain': 'fa-cloud-rain',
+            'drizzle': 'fa-cloud-drizzle',
+            'thunderstorm': 'fa-bolt',
+            'snow': 'fa-snowflake',
+            'mist': 'fa-smog',
+            'fog': 'fa-smog',
+            'haze': 'fa-smog',
+            'dust': 'fa-smog',
+            'sand': 'fa-smog',
+            'ash': 'fa-smog',
+            'squall': 'fa-wind',
+            'tornado': 'fa-tornado'
+        };
+
+        // UV Index categories
+        const UV_CATEGORIES = [
+            { max: 2, level: 'Low', class: 'uv-low' },
+            { max: 5, level: 'Moderate', class: 'uv-moderate' },
+            { max: 7, level: 'High', class: 'uv-high' },
+            { max: 10, level: 'Very High', class: 'uv-very-high' },
+            { max: Infinity, level: 'Extreme', class: 'uv-extreme' }
+        ];
+
+        class WeatherApp {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.loadWeather();
+                setInterval(() => this.loadWeather(), CONFIG.updateInterval);
+            }
+
+            async loadWeather() {
+                try {
+                    // Show loading state
+                    this.showLoading();
+                    
+                    // Fetch current weather
+                    const weatherData = await this.fetchWeatherData();
+                    if (weatherData) {
+                        this.updateWeatherUI(weatherData);
+                        this.updateLastUpdated();
+                    }
+                } catch (error) {
+                    this.showError('Failed to load weather data');
+                    console.error('Weather loading error:', error);
+                }
+            }
+
+            async fetchWeatherData() {
+                const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${CONFIG.city}&units=${CONFIG.units}&appid=${CONFIG.apiKey}`;
+                
+                const response = await fetch(weatherUrl);
+                if (!response.ok) {
+                    throw new Error(`Weather API error: ${response.status}`);
+                }
+                
+                return await response.json();
+            }
+
+            updateWeatherUI(data) {
+                // Basic information
+                document.getElementById('weather-location').textContent = `${data.name}, ${data.sys.country}`;
+                document.getElementById('weather-temperature').textContent = `${Math.round(data.main.temp)}°C`;
+                document.getElementById('weather-condition').textContent = this.capitalizeFirstLetter(data.weather[0].description);
+                document.getElementById('feels-like-temp').textContent = Math.round(data.main.feels_like);
+
+                // Detailed information
+                document.getElementById('weather-humidity').textContent = `${data.main.humidity}%`;
+                document.getElementById('weather-wind').textContent = data.wind.speed;
+                document.getElementById('weather-pressure').textContent = data.main.pressure;
+                document.getElementById('weather-visibility').textContent = data.visibility;
+                document.getElementById('weather-clouds').textContent = data.clouds.all;
+
+                // Sunrise and sunset (convert UTC to local time)
+                document.getElementById('weather-sunrise').textContent = this.formatTime(data.sys.sunrise);
+                document.getElementById('weather-sunset').textContent = this.formatTime(data.sys.sunset);
+
+                // Update weather icon
+                this.updateWeatherIcon(data.weather[0].main.toLowerCase());
+
+                // Calculate and display UV index (mock for now - you'd need UV API)
+                this.displayUVIndex(data);
+            }
+
+            updateWeatherIcon(condition) {
+                const iconElement = document.getElementById('weather-icon');
+                const iconClass = WEATHER_ICONS[condition] || 'fa-cloud';
+                iconElement.innerHTML = `<i class="fas ${iconClass}"></i>`;
+            }
+
+            displayUVIndex(data) {
+                // Mock UV index calculation based on time and conditions
+                // In a real app, you'd use a UV index API
+                const uvIndex = this.calculateMockUVIndex(data);
+                const uvCategory = this.getUVCategory(uvIndex);
+                
+                const uvElement = document.getElementById('uv-index');
+                const categoryElement = document.getElementById('uv-category');
+                
+                uvElement.textContent = uvIndex.toFixed(1);
+                uvElement.className = `uv-value ${uvCategory.class}`;
+                categoryElement.textContent = uvCategory.level;
+            }
+
+            calculateMockUVIndex(data) {
+                // Simple mock calculation based on time of day and cloud coverage
+                const now = new Date();
+                const hours = now.getHours();
+                const cloudCover = data.clouds.all / 100;
+                
+                // Peak UV around noon, reduced by cloud cover
+                const baseUV = 8; // Maximum possible UV
+                const timeFactor = Math.sin((hours - 6) * Math.PI / 12); // Peak at 12:00
+                const uv = Math.max(0, baseUV * timeFactor * (1 - cloudCover * 0.7));
+                
+                return Math.min(uv, 11); // Cap at 11
+            }
+
+            getUVCategory(uvIndex) {
+                return UV_CATEGORIES.find(category => uvIndex <= category.max) || UV_CATEGORIES[UV_CATEGORIES.length - 1];
+            }
+
+            formatTime(timestamp) {
+                return new Date(timestamp * 1000).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
+            }
+
+            capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            updateLastUpdated() {
+                const now = new Date();
+                document.getElementById('update-time').textContent = now.toLocaleTimeString();
+            }
+
+            showLoading() {
+                document.getElementById('weather-location').textContent = 'Loading...';
+                document.getElementById('weather-temperature').textContent = '--°C';
+                document.getElementById('weather-condition').textContent = 'Loading weather data...';
+            }
+
+            showError(message) {
+                document.getElementById('weather-condition').textContent = message;
+                document.getElementById('weather-condition').style.color = '#ff6b6b';
+            }
+        }
+
+        // Initialize the weather app when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new WeatherApp();
+        });
+
+        // Simple error handling for missing API key
+        if (CONFIG.apiKey === 'YOUR_API_KEY_HERE') {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('weather-condition').textContent = 'Please add your OpenWeatherMap API key';
+                document.getElementById('weather-condition').style.color = '#ff6b6b';
+            });
+        }
+    </script>
+</body>
+</html>
