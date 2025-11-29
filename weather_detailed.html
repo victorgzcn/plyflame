@@ -26,6 +26,13 @@
             margin: 0 auto;
         }
 
+        .header-date {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
         .section-title {
             text-align: center;
             margin-bottom: 2rem;
@@ -35,6 +42,41 @@
         .section-title i {
             margin-right: 15px;
             color: #ffd700;
+        }
+
+        /* Location Search */
+        .location-search {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            gap: 10px;
+        }
+
+        .location-input {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 30px;
+            width: 300px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .location-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            background: #ffd700;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .location-btn:hover {
+            background: #ffed4a;
+            transform: translateY(-2px);
         }
 
         .weather-container {
@@ -48,6 +90,16 @@
         @media (max-width: 768px) {
             .weather-container {
                 grid-template-columns: 1fr;
+            }
+            
+            .location-search {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .location-input {
+                width: 100%;
+                max-width: 300px;
             }
         }
 
@@ -197,6 +249,62 @@
         .uv-very-high { color: #5352ed; }
         .uv-extreme { color: #3742fa; }
 
+        /* Forecast Section */
+        .forecast-section {
+            margin-top: 3rem;
+        }
+
+        .forecast-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .forecast-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .forecast-day {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.2rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .forecast-day:hover {
+            transform: translateY(-5px);
+        }
+
+        .forecast-date {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .forecast-icon {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+            color: #ffd700;
+        }
+
+        .forecast-temp {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .forecast-condition {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
         .loading {
             text-align: center;
             padding: 2rem;
@@ -252,11 +360,19 @@
             // Update every second
             setInterval(updateDateTime, 1000);
             </script>
-        <div class="container">
+            
             <h2 class="section-title">
                 <i class="fas fa-cloud-sun"></i>
                 Weather Report
             </h2>
+            
+            <!-- Location Search -->
+            <div class="location-search">
+                <input type="text" class="location-input" id="location-input" placeholder="Enter city name...">
+                <button class="location-btn" id="location-btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
             
             <div class="weather-container">
                 <!-- Main Weather Card -->
@@ -358,8 +474,19 @@
                 </div>
             </div>
 
+            <!-- Forecast Section -->
+            <div class="forecast-section">
+                <h3 class="forecast-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    5-Day Forecast
+                </h3>
+                <div class="forecast-container" id="forecast-container">
+                    <!-- Forecast days will be inserted here by JavaScript -->
+                </div>
+            </div>
+
             <div class="last-updated" id="last-updated">
-                Powered by Plyflame Weather Service at: <span id="update-time">--</span>
+                Powered by Plyflame Weather Service at : <span id="update-time">--</span>
             </div>
         </div>
     </section>
@@ -402,12 +529,34 @@
 
         class WeatherApp {
             constructor() {
+                this.currentCity = CONFIG.city;
                 this.init();
             }
 
             init() {
+                // Set up event listeners
+                document.getElementById('location-btn').addEventListener('click', () => {
+                    this.changeLocation();
+                });
+                
+                document.getElementById('location-input').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.changeLocation();
+                    }
+                });
+                
+                // Load initial weather
                 this.loadWeather();
                 setInterval(() => this.loadWeather(), CONFIG.updateInterval);
+            }
+
+            changeLocation() {
+                const newLocation = document.getElementById('location-input').value.trim();
+                if (newLocation) {
+                    this.currentCity = newLocation;
+                    this.loadWeather();
+                    document.getElementById('location-input').value = '';
+                }
             }
 
             async loadWeather() {
@@ -421,6 +570,12 @@
                         this.updateWeatherUI(weatherData);
                         this.updateLastUpdated();
                     }
+                    
+                    // Fetch forecast data
+                    const forecastData = await this.fetchForecastData();
+                    if (forecastData) {
+                        this.updateForecastUI(forecastData);
+                    }
                 } catch (error) {
                     this.showError('Failed to load weather data');
                     console.error('Weather loading error:', error);
@@ -428,11 +583,22 @@
             }
 
             async fetchWeatherData() {
-                const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${CONFIG.city}&units=${CONFIG.units}&appid=${CONFIG.apiKey}`;
+                const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${this.currentCity}&units=${CONFIG.units}&appid=${CONFIG.apiKey}`;
                 
                 const response = await fetch(weatherUrl);
                 if (!response.ok) {
                     throw new Error(`Weather API error: ${response.status}`);
+                }
+                
+                return await response.json();
+            }
+
+            async fetchForecastData() {
+                const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${this.currentCity}&units=${CONFIG.units}&appid=${CONFIG.apiKey}`;
+                
+                const response = await fetch(forecastUrl);
+                if (!response.ok) {
+                    throw new Error(`Forecast API error: ${response.status}`);
                 }
                 
                 return await response.json();
@@ -461,6 +627,43 @@
 
                 // Calculate and display UV index (mock for now - you'd need UV API)
                 this.displayUVIndex(data);
+            }
+
+            updateForecastUI(data) {
+                const forecastContainer = document.getElementById('forecast-container');
+                forecastContainer.innerHTML = '';
+                
+                // Get daily forecast (every 24 hours)
+                const dailyForecasts = [];
+                for (let i = 0; i < data.list.length; i += 8) {
+                    dailyForecasts.push(data.list[i]);
+                }
+                
+                // Limit to 5 days
+                dailyForecasts.slice(0, 5).forEach(forecast => {
+                    const date = new Date(forecast.dt * 1000);
+                    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                    const monthDay = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    
+                    const condition = forecast.weather[0].main.toLowerCase();
+                    const iconClass = WEATHER_ICONS[condition] || 'fa-cloud';
+                    
+                    const forecastDay = document.createElement('div');
+                    forecastDay.className = 'forecast-day';
+                    forecastDay.innerHTML = `
+                        <div class="forecast-date">
+                            <div>${dayName}</div>
+                            <div>${monthDay}</div>
+                        </div>
+                        <div class="forecast-icon">
+                            <i class="fas ${iconClass}"></i>
+                        </div>
+                        <div class="forecast-temp">${Math.round(forecast.main.temp)}°C</div>
+                        <div class="forecast-condition">${this.capitalizeFirstLetter(forecast.weather[0].description)}</div>
+                    `;
+                    
+                    forecastContainer.appendChild(forecastDay);
+                });
             }
 
             updateWeatherIcon(condition) {
