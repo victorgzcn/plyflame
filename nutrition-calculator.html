@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Calculator - Enhanced Metabolic Rate Estimation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #3498db);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        header h1 i {
+            color: #f39c12;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .app-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 25px;
+        }
+
+        .calculator-section {
+            flex: 1;
+            min-width: 350px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-right: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .results-section {
+            flex: 1;
+            min-width: 350px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+        }
+
+        h2 i {
+            color: #3498db;
+        }
+
+        .section-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .radio-option:hover {
+            background: #f5f7fa;
+            border-color: #3498db;
+        }
+
+        .radio-option input {
+            width: auto;
+            margin-top: 3px;
+        }
+
+        .radio-option label {
+            flex: 1;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .radio-label-main {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+
+        .radio-label-desc {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 2px;
+            display: block;
+            font-weight: normal;
+        }
+
+        .info-box {
+            background: #e8f4fc;
+            border-left: 4px solid #3498db;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .info-box i {
+            color: #3498db;
+            margin-right: 6px;
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 4px;
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .slider-container {
+            margin-top: 8px;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 4px;
+            color: #3498db;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(to right, #95a5a6, #7f8c8d);
+            font-size: 14px;
+            padding: 10px 15px;
+            margin-top: 10px;
+        }
+
+        .result-card {
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s;
+        }
+
+        .result-card:hover {
+            transform: translateX(3px);
+        }
+
+        .result-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2c3e50;
+            margin: 8px 0;
+        }
+
+        .result-details {
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .confidence-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f4fc;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        .confidence-bar {
+            height: 6px;
+            background: #ecf0f1;
+            border-radius: 3px;
+            margin: 5px 0;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(to right, #e74c3c, #f39c12, #2ecc71);
+            transition: width 0.5s ease;
+        }
+
+        .bmi-category {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        .underweight { background: #3498db; color: white; }
+        .normal { background: #2ecc71; color: white; }
+        .overweight { background: #f39c12; color: white; }
+        .obese { background: #e74c3c; color: white; }
+
+        .macronutrient {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .macro-bar {
+            height: 16px;
+            background: #eee;
+            border-radius: 8px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .macro-fill {
+            height: 100%;
+            float: left;
+        }
+
+        .protein { background: #3498db; }
+        .carbs { background: #2ecc71; }
+        .fat { background: #f39c12; }
+
+        .macro-label {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+            font-size: 0.9rem;
+        }
+
+        .meal-plan {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .meal {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .meal-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .meal-items {
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .advanced-section {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 2px solid #3498db;
+        }
+
+        .advanced-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #3498db;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .advanced-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .advanced-content.expanded {
+            max-height: 1000px;
+        }
+
+        .history-section {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px solid #eee;
+        }
+
+        .history-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #2c3e50;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .app-content {
+                flex-direction: column;
+            }
+            
+            .calculator-section {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Advanced Nutrition Calculator</h1>
+            <p>Calculate BMI, TDEE, and get personalized nutrition recommendations with enhanced metabolic rate estimation</p>
+        </header>
+        
+        <div class="app-content">
+            <div class="calculator-section">
+                <h2><i class="fas fa-user-edit"></i> Basic Information</h2>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Name</label>
+                    <input type="text" id="name" placeholder="Enter your name" value="Victor Ye">
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-birthday-cake"></i> Age</label>
+                    <input type="number" id="age" min="1" max="120" value="25">
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-weight"></i> Weight (kg)</label>
+                    <input type="range" id="weightSlider" min="30" max="200" value="64" step="0.5">
+                    <div class="slider-value" id="weightValue">64.0 kg</div>
+                    <input type="number" id="weight" min="30" max="200" value="64" step="0.5">
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-ruler-vertical"></i> Height (cm)</label>
+                    <input type="range" id="heightSlider" min="100" max="250" value="174">
+                    <div class="slider-value" id="heightValue">174 cm</div>
+                    <input type="number" id="height" min="100" max="250" value="174">
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-calculator"></i> Calculation Basis</label>
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>For metabolic calculations:</strong> Select the physiological profile that best matches you.
+                    </div>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="calc_male" name="calc_basis" value="male" checked>
+                            <label for="calc_male">
+                                <span class="radio-label-main">Typically Male Physiology</span>
+                                <span class="radio-label-desc">Standard male metabolic formula</span>
+                            </label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="calc_female" name="calc_basis" value="female">
+                            <label for="calc_female">
+                                <span class="radio-label-main">Typically Female Physiology</span>
+                                <span class="radio-label-desc">Standard female metabolic formula</span>
+                            </label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="calc_custom" name="calc_basis" value="custom">
+                            <label for="calc_custom">
+                                <span class="radio-label-main">Custom / Individualized</span>
+                                <span class="radio-label-desc">Provide additional data for better accuracy</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="advanced-section">
+                    <div class="advanced-toggle" id="advancedToggle">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Advanced Metabolic Factors (Optional)</span>
+                        <i class="fas fa-chevron-down" id="advancedIcon"></i>
+                    </div>
+                    <div class="advanced-content" id="advancedContent">
+                        <div class="section-subtitle">Provide additional data for more accurate metabolic rate estimation</div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-heartbeat"></i> Resting Heart Rate (bpm)</label>
+                            <input type="number" id="restingHR" min="40" max="100" placeholder="e.g., 65">
+                            <span class="help-text">Measure upon waking, before getting out of bed</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-weight"></i> Body Fat Estimate</label>
+                            <select id="bodyFatEstimate">
+                                <option value="unknown">I don't know - use average</option>
+                                <option value="15">Very lean (Athlete: 8-15%)</option>
+                                <option value="20" selected>Fit / Average (16-24%)</option>
+                                <option value="25">Somewhat overweight (25-31%)</option>
+                                <option value="35">Overweight (32-36%)</option>
+                                <option value="40">Obese (37%+)</option>
+                            </select>
+                            <span class="help-text">More muscle mass increases metabolic rate</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-bed"></i> Sleep Quality</label>
+                            <select id="sleepQuality">
+                                <option value="1.0">Excellent (7-9 hours, deep sleep)</option>
+                                <option value="0.98">Good (6-7 hours, mostly restful)</option>
+                                <option value="0.95" selected>Average (5-6 hours, occasional issues)</option>
+                                <option value="0.9">Poor (＜5 hours or frequent waking)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-brain"></i> Chronic Stress Level</label>
+                            <select id="stressLevel">
+                                <option value="0.98">Low (Relaxed, minimal stress)</option>
+                                <option value="1.0" selected>Moderate (Normal daily stress)</option>
+                                <option value="1.05">High (Frequent stress, anxiety)</option>
+                                <option value="1.1">Very high (Constant stress, burnout risk)</option>
+                            </select>
+                            <span class="help-text">Chronic stress can affect metabolism</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-history"></i> Recent Dieting History</label>
+                            <select id="dietHistory">
+                                <option value="1.0" selected>Never dieted / Stable weight</option>
+                                <option value="0.98">Recently maintained weight (3+ months)</option>
+                                <option value="0.95">Recent weight loss (＜3 months ago)</option>
+                                <option value="0.92">Yo-yo dieter / Frequent dieting</option>
+                                <option value="0.88">Long-term calorie restriction</option>
+                            </select>
+                            <span class="help-text">Metabolism adapts to prolonged dieting</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-running"></i> Activity Level</label>
+                    <select id="activity">
+                        <option value="1.2">Sedentary (little or no exercise)</option>
+                        <option value="1.375" selected>Lightly Active (light exercise 1-3 days/week)</option>
+                        <option value="1.55">Moderately Active (moderate exercise 3-5 days/week)</option>
+                        <option value="1.725">Very Active (hard exercise 6-7 days/week)</option>
+                        <option value="1.9">Extremely Active (very hard exercise & physical job)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-bullseye"></i> Weight Goal</label>
+                    <select id="goal">
+                        <option value="maintain" selected>Maintain Weight</option>
+                        <option value="lose_mild">Lose Weight Slowly (0.25 kg/week)</option>
+                        <option value="lose">Lose Weight (0.5 kg/week)</option>
+                        <option value="lose_aggressive">Lose Weight Fast (0.75 kg/week)</option>
+                        <option value="gain_mild">Gain Weight Slowly (0.25 kg/week)</option>
+                        <option value="gain">Gain Weight (0.5 kg/week)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-apple-alt"></i> Macronutrient Profile</label>
+                    <select id="macroProfile">
+                        <option value="balanced" selected>Balanced (P25% C50% F25%)</option>
+                        <option value="high_protein">High Protein (P40% C30% F30%)</option>
+                        <option value="moderate_protein">Moderate Protein (P30% C40% F30%)</option>
+                        <option value="low_carb">Low Carb (P30% C20% F50%)</option>
+                        <option value="high_carb">High Carb (P15% C60% F25%)</option>
+                    </select>
+                </div>
+                
+                <button class="btn" id="calculateBtn">
+                    <i class="fas fa-calculator"></i> Calculate Nutrition Plan
+                </button>
+                
+                <button class="btn btn-secondary" id="resetBtn">
+                    <i class="fas fa-redo"></i> Reset to Defaults
+                </button>
+            </div>
+            
+            <div class="results-section">
+                <h2><i class="fas fa-chart-line"></i> Your Results</h2>
+                
+                <div class="result-card">
+                    <div class="result-title"><i class="fas fa-user-circle"></i> Personal Summary</div>
+                    <div class="result-details" id="personalInfo">Name: Victor Ye | Age: 25 | Calculation Basis: Typically Male Physiology</div>
+                    <div class="confidence-indicator" id="confidenceIndicator">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Estimate Accuracy: <strong id="accuracyValue">80%</strong></span>
+                    </div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidenceBar" style="width: 80%;"></div>
+                    </div>
+                    <div class="help-text" id="accuracyExplanation">Based on provided information. Add more data to improve accuracy.</div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-title"><i class="fas fa-weight"></i> Body Mass Index (BMI)</div>
+                    <div class="result-value" id="bmiValue">21.1</div>
+                    <div class="result-details">
+                        <span class="bmi-category normal" id="bmiCategory">Normal weight</span>
+                        <p id="bmiDescription">Your weight is within the normal range for your height.</p>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-title"><i class="fas fa-fire"></i> Metabolic Rate Analysis</div>
+                    <div class="result-details">
+                        <div><strong>Basal Metabolic Rate (BMR):</strong> <span id="bmrValue">1,688</span> calories/day</div>
+                        <div><strong>Total Daily Energy Expenditure (TDEE):</strong> <span id="tdeeValue">2,491.6</span> calories/day</div>
+                        <div id="metabolicNote">Calories needed to maintain current weight with your activity level</div>
+                        <div class="help-text" id="metabolicFactors">Based on standard calculation. Provide additional data for personalized estimate.</div>
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-title"><i class="fas fa-bullseye"></i> Daily Calorie Target</div>
+                    <div class="result-value" id="calorieTarget">2,491.6</div>
+                    <div class="result-details" id="calorieDetails">To maintain your current weight</div>
+                    <div class="help-text" id="calorieAdjustment">Adjust by ±250-500 calories based on weekly weight changes</div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-title"><i class="fas fa-utensils"></i> Macronutrient Breakdown</div>
+                    <div id="macronutrients">
+                        <div class="macro-bar">
+                            <div class="macro-fill protein" style="width: 25%;"></div>
+                            <div class="macro-fill carbs" style="width: 50%;"></div>
+                            <div class="macro-fill fat" style="width: 25%;"></div>
+                        </div>
+                        <div class="macro-label">
+                            <span>Protein: <span id="proteinValue">156g</span></span>
+                            <span>Carbs: <span id="carbsValue">311g</span></span>
+                            <span>Fat: <span id="fatValue">69g</span></span>
+                        </div>
+                    </div>
+                    <div class="help-text">Based on your selected macronutrient profile</div>
+                </div>
+                
+                <div class="meal-plan">
+                    <h2><i class="fas fa-utensils"></i> Sample Daily Meal Plan</h2>
+                    <div class="meal">
+                        <div class="meal-title"><i class="fas fa-sun"></i> Breakfast (~500 cal)</div>
+                        <div class="meal-items" id="breakfast">Oatmeal with berries, Greek yogurt, 2 boiled eggs</div>
+                    </div>
+                    <div class="meal">
+                        <div class="meal-title"><i class="fas fa-cloud-sun"></i> Lunch (~650 cal)</div>
+                        <div class="meal-items" id="lunch">Grilled chicken breast, quinoa, mixed vegetables, salad</div>
+                    </div>
+                    <div class="meal">
+                        <div class="meal-title"><i class="fas fa-moon"></i> Dinner (~650 cal)</div>
+                        <div class="meal-items" id="dinner">Salmon fillet, sweet potato, steamed broccoli, avocado</div>
+                    </div>
+                    <div class="meal">
+                        <div class="meal-title"><i class="fas fa-apple-alt"></i> Snacks (~350 cal)</div>
+                        <div class="meal-items" id="snacks">Protein shake, almonds, fruit, protein bar</div>
+                    </div>
+                    <div class="help-text">Meal suggestions based on your selected macronutrient profile</div>
+                </div>
+                
+                <div class="result-card">
+                    <div class="result-title"><i class="fas fa-lightbulb"></i> Personalized Recommendations</div>
+                    <div class="result-details" id="recommendations">
+                        <p>1. Start with the calculated calorie target for 2 weeks</p>
+                        <p>2. Track your weight and adjust calories by ±250 based on changes</p>
+                        <p>3. Consider adding the advanced metabolic factors for better accuracy</p>
+                        <p>4. Stay hydrated and aim for consistent sleep patterns</p>
+                    </div>
+                </div>
+                
+                <div class="history-section">
+                    <h2><i class="fas fa-history"></i> Calculation History</h2>
+                    <div id="historyList">
+                        <!-- History items will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Advanced Nutrition Calculator v3.0 | Created by Plyflame Health Service</p>
+            <p><small>Disclaimer: This tool provides estimates based on scientific formulas. Individual results may vary. Consult with healthcare professionals for personalized advice.</small></p>
+        </footer>
+    </div>
+
+    <script>
+        // ========== DOM ELEMENTS ==========
+        const nameInput = document.getElementById('name');
+        const ageInput = document.getElementById('age');
+        const weightInput = document.getElementById('weight');
+        const weightSlider = document.getElementById('weightSlider');
+        const weightValue = document.getElementById('weightValue');
+        const heightInput = document.getElementById('height');
+        const heightSlider = document.getElementById('heightSlider');
+        const heightValue = document.getElementById('heightValue');
+        const activitySelect = document.getElementById('activity');
+        const goalSelect = document.getElementById('goal');
+        const macroProfileSelect = document.getElementById('macroProfile');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        // Advanced inputs
+        const restingHRInput = document.getElementById('restingHR');
+        const bodyFatSelect = document.getElementById('bodyFatEstimate');
+        const sleepQualitySelect = document.getElementById('sleepQuality');
+        const stressLevelSelect = document.getElementById('stressLevel');
+        const dietHistorySelect = document.getElementById('dietHistory');
+        
+        // Advanced section toggle
+        const advancedToggle = document.getElementById('advancedToggle');
+        const advancedContent = document.getElementById('advancedContent');
+        const advancedIcon = document.getElementById('advancedIcon');
+        
+        // Result elements
+        const personalInfo = document.getElementById('personalInfo');
+        const confidenceIndicator = document.getElementById('confidenceIndicator');
+        const accuracyValue = document.getElementById('accuracyValue');
+        const confidenceBar = document.getElementById('confidenceBar');
+        const accuracyExplanation = document.getElementById('accuracyExplanation');
+        const bmiValue = document.getElementById('bmiValue');
+        const bmiCategory = document.getElementById('bmiCategory');
+        const bmiDescription = document.getElementById('bmiDescription');
+        const bmrValue = document.getElementById('bmrValue');
+        const tdeeValue = document.getElementById('tdeeValue');
+        const metabolicNote = document.getElementById('metabolicNote');
+        const metabolicFactors = document.getElementById('metabolicFactors');
+        const calorieTarget = document.getElementById('calorieTarget');
+        const calorieDetails = document.getElementById('calorieDetails');
+        const calorieAdjustment = document.getElementById('calorieAdjustment');
+        const proteinValue = document.getElementById('proteinValue');
+        const carbsValue = document.getElementById('carbsValue');
+        const fatValue = document.getElementById('fatValue');
+        const breakfast = document.getElementById('breakfast');
+        const lunch = document.getElementById('lunch');
+        const dinner = document.getElementById('dinner');
+        const snacks = document.getElementById('snacks');
+        const recommendations = document.getElementById('recommendations');
+        const historyList = document.getElementById('historyList');
+        
+        // ========== EVENT LISTENERS ==========
+        
+        // Sync sliders with number inputs
+        weightSlider.addEventListener('input', function() {
+            weightInput.value = this.value;
+            weightValue.textContent = this.value + ' kg';
+        });
+        
+        weightInput.addEventListener('input', function() {
+            weightSlider.value = this.value;
+            weightValue.textContent = this.value + ' kg';
+        });
+        
+        heightSlider.addEventListener('input', function() {
+            heightInput.value = this.value;
+            heightValue.textContent = this.value + ' cm';
+        });
+        
+        heightInput.addEventListener('input', function() {
+            heightSlider.value = this.value;
+            heightValue.textContent = this.value + ' cm';
+        });
+        
+        // Advanced section toggle
+        advancedToggle.addEventListener('click', function() {
+            advancedContent.classList.toggle('expanded');
+            advancedIcon.classList.toggle('fa-chevron-down');
+            advancedIcon.classList.toggle('fa-chevron-up');
+        });
+        
+        // Calculate button
+        calculateBtn.addEventListener('click', function() {
+            calculateNutrition();
+            addToHistory();
+        });
+        
+        // Reset button
+        resetBtn.addEventListener('click', function() {
+            resetToDefaults();
+        });
+        
+        // ========== CORE FUNCTIONS ==========
+        
+        function calculateNutrition() {
+            // Get basic inputs
+            const name = nameInput.value || 'User';
+            const age = parseInt(ageInput.value);
+            const weight = parseFloat(weightInput.value);
+            const height = parseFloat(heightInput.value);
+            const activity = parseFloat(activitySelect.value);
+            const goal = goalSelect.value;
+            const macroProfile = macroProfileSelect.value;
+            const calcBasis = document.querySelector('input[name="calc_basis"]:checked').value;
+            
+            // Get advanced inputs if available
+            const restingHR = restingHRInput.value ? parseInt(restingHRInput.value) : null;
+            const bodyFat = bodyFatSelect.value !== 'unknown' ? parseFloat(bodyFatSelect.value) : null;
+            const sleepQuality = parseFloat(sleepQualitySelect.value);
+            const stressLevel = parseFloat(stressLevelSelect.value);
+            const dietHistory = parseFloat(dietHistorySelect.value);
+            
+            // ========== CALCULATE ESTIMATION ACCURACY ==========
+            const accuracy = calculateEstimationAccuracy(restingHR, bodyFat, calcBasis);
+            accuracyValue.textContent = accuracy + '%';
+            confidenceBar.style.width = accuracy + '%';
+            
+            // Update accuracy explanation
+            let explanation = '';
+            if (accuracy >= 90) {
+                explanation = 'High accuracy based on comprehensive data.';
+            } else if (accuracy >= 80) {
+                explanation = 'Good accuracy. Consider adding more data for even better precision.';
+            } else {
+                explanation = 'Basic accuracy. Add advanced factors to improve estimate precision.';
+            }
+            accuracyExplanation.textContent = explanation;
+            
+            // ========== UPDATE PERSONAL INFO ==========
+            let calcBasisText = '';
+            switch(calcBasis) {
+                case 'male': calcBasisText = 'Typically Male Physiology'; break;
+                case 'female': calcBasisText = 'Typically Female Physiology'; break;
+                case 'custom': calcBasisText = 'Custom Calculation'; break;
+            }
+            personalInfo.textContent = `Name: ${name} | Age: ${age} | Basis: ${calcBasisText}`;
+            
+            // ========== CALCULATE BMI ==========
+            const heightMeters = height / 100;
+            const bmi = weight / (heightMeters * heightMeters);
+            bmiValue.textContent = bmi.toFixed(1);
+            
+            // Determine BMI category
+            let bmiCat = '', bmiDesc = '', bmiClass = '';
+            if (bmi < 18.5) {
+                bmiCat = 'Underweight'; bmiClass = 'underweight';
+                bmiDesc = 'Consider consulting a healthcare provider for weight gain strategies.';
+            } else if (bmi < 25) {
+                bmiCat = 'Normal weight'; bmiClass = 'normal';
+                bmiDesc = 'Your weight is within the healthy range for your height.';
+            } else if (bmi < 30) {
+                bmiCat = 'Overweight'; bmiClass = 'overweight';
+                bmiDesc = 'Consider gradual weight loss for improved health outcomes.';
+            } else {
+                bmiCat = 'Obese'; bmiClass = 'obese';
+                bmiDesc = 'Consult a healthcare provider for a personalized weight management plan.';
+            }
+            
+            bmiCategory.textContent = bmiCat;
+            bmiCategory.className = `bmi-category ${bmiClass}`;
+            bmiDescription.textContent = bmiDesc;
+            
+            // ========== CALCULATE METABOLIC RATE ==========
+            const metabolicResults = calculateMetabolicRate(
+                age, weight, height, calcBasis, 
+                restingHR, bodyFat, sleepQuality, stressLevel, dietHistory
+            );
+            
+            const bmr = metabolicResults.bmr;
+            const tdee = bmr * activity;
+            
+            bmrValue.textContent = formatNumber(bmr);
+            tdeeValue.textContent = tdee.toFixed(1);
+            
+            // Update metabolic factors note
+            let metabolicNoteText = '';
+            if (restingHR !== null || bodyFat !== null) {
+                metabolicNoteText = 'Personalized estimate based on your additional data.';
+            } else {
+                metabolicNoteText = 'Based on standard calculation. Add advanced factors for personalized estimate.';
+            }
+            metabolicFactors.textContent = metabolicNoteText;
+            
+            // ========== CALCULATE CALORIE TARGET ==========
+            let calorieTargetValue, calorieDesc, calorieAdj;
+            
+            switch(goal) {
+                case 'maintain':
+                    calorieTargetValue = tdee;
+                    calorieDesc = 'To maintain your current weight';
+                    calorieAdj = 'Monitor weight weekly. Adjust by ±250 calories if gaining/losing.';
+                    break;
+                case 'lose_mild':
+                    calorieTargetValue = tdee - 250;
+                    calorieDesc = 'To lose 0.25 kg per week';
+                    calorieAdj = 'Expect slow, sustainable weight loss.';
+                    break;
+                case 'lose':
+                    calorieTargetValue = tdee - 500;
+                    calorieDesc = 'To lose 0.5 kg per week';
+                    calorieAdj = 'Standard weight loss rate. Monitor energy levels.';
+                    break;
+                case 'lose_aggressive':
+                    calorieTargetValue = tdee - 750;
+                    calorieDesc = 'To lose 0.75 kg per week';
+                    calorieAdj = 'Aggressive weight loss. Not recommended long-term.';
+                    break;
+                case 'gain_mild':
+                    calorieTargetValue = tdee + 250;
+                    calorieDesc = 'To gain 0.25 kg per week';
+                    calorieAdj = 'Slow, controlled weight gain.';
+                    break;
+                case 'gain':
+                    calorieTargetValue = tdee + 500;
+                    calorieDesc = 'To gain 0.5 kg per week';
+                    calorieAdj = 'Standard weight gain rate for muscle building.';
+                    break;
+                default:
+                    calorieTargetValue = tdee;
+                    calorieDesc = 'To maintain weight';
+                    calorieAdj = 'Monitor and adjust as needed.';
+            }
+            
+            calorieTarget.textContent = calorieTargetValue.toFixed(1);
+            calorieDetails.textContent = calorieDesc;
+            calorieAdjustment.textContent = calorieAdj;
+            
+            // ========== CALCULATE MACRONUTRIENTS ==========
+            let proteinPercent, carbsPercent, fatPercent;
+            
+            switch(macroProfile) {
+                case 'balanced': proteinPercent = 0.25; carbsPercent = 0.50; fatPercent = 0.25; break;
+                case 'high_protein': proteinPercent = 0.40; carbsPercent = 0.30; fatPercent = 0.30; break;
+                case 'moderate_protein': proteinPercent = 0.30; carbsPercent = 0.40; fatPercent = 0.30; break;
+                case 'low_carb': proteinPercent = 0.30; carbsPercent = 0.20; fatPercent = 0.50; break;
+                case 'high_carb': proteinPercent = 0.15; carbsPercent = 0.60; fatPercent = 0.25; break;
+                default: proteinPercent = 0.25; carbsPercent = 0.50; fatPercent = 0.25;
+            }
+            
+            const proteinGrams = Math.round((calorieTargetValue * proteinPercent) / 4);
+            const carbsGrams = Math.round((calorieTargetValue * carbsPercent) / 4);
+            const fatGrams = Math.round((calorieTargetValue * fatPercent) / 9);
+            
+            proteinValue.textContent = `${proteinGrams}g`;
+            carbsValue.textContent = `${carbsGrams}g`;
+            fatValue.textContent = `${fatGrams}g`;
+            
+            // Update macro bar
+            const macroBar = document.querySelector('.macro-bar');
+            macroBar.innerHTML = `
+                <div class="macro-fill protein" style="width: ${proteinPercent * 100}%;"></div>
+                <div class="macro-fill carbs" style="width: ${carbsPercent * 100}%;"></div>
+                <div class="macro-fill fat" style="width: ${fatPercent * 100}%;"></div>
+            `;
+            
+            // ========== GENERATE MEAL PLAN ==========
+            generateMealPlan(macroProfile);
+            
+            // ========== GENERATE RECOMMENDATIONS ==========
+            generateRecommendations(
+                bmi, calorieTargetValue, accuracy, 
+                restingHR, bodyFat, metabolicResults.adjustmentFactors
+            );
+            
+            // Show success notification
+            showNotification('Nutrition plan calculated successfully!', 'success');
+        }
+        
+        function calculateMetabolicRate(age, weight, height, calcBasis, restingHR, bodyFat, sleepQuality, stressLevel, dietHistory) {
+            // Base BMR calculation using Mifflin-St Jeor formula
+            const baseCalculation = 10 * weight + 6.25 * height - 5 * age;
+            let baseBMR;
+            
+            if (calcBasis === 'male') {
+                baseBMR = baseCalculation + 5;
+            } else if (calcBasis === 'female') {
+                baseBMR = baseCalculation - 161;
+            } else {
+                // For custom, use average of male and female
+                const maleBMR = baseCalculation + 5;
+                const femaleBMR = baseCalculation - 161;
+                baseBMR = (maleBMR + femaleBMR) / 2;
+            }
+            
+            // Track adjustment factors
+            const adjustmentFactors = {
+                bodyComposition: 1.0,
+                fitness: 1.0,
+                lifestyle: 1.0,
+                totalAdjustment: 1.0
+            };
+            
+            let adjustedBMR = baseBMR;
+            
+            // ========== BODY COMPOSITION ADJUSTMENT ==========
+            if (bodyFat !== null) {
+                // Higher muscle mass increases metabolic rate
+                // Average body fat: Male ~20%, Female ~28%
+                let referenceBodyFat = calcBasis === 'male' ? 20 : 28;
+                if (calcBasis === 'custom') referenceBodyFat = 24;
+                
+                const bodyFatDifference = referenceBodyFat - bodyFat;
+                // Each 5% less body fat than reference = ~3% higher metabolism
+                adjustmentFactors.bodyComposition = 1 + (bodyFatDifference / 5) * 0.03;
+                adjustedBMR *= adjustmentFactors.bodyComposition;
+            }
+            
+            // ========== FITNESS ADJUSTMENT (Resting HR) ==========
+            if (restingHR !== null) {
+                let hrFactor;
+                if (restingHR < 55) hrFactor = 1.08;      // Very fit athlete
+                else if (restingHR < 60) hrFactor = 1.05;  // Very fit
+                else if (restingHR < 65) hrFactor = 1.03;  // Fit
+                else if (restingHR < 70) hrFactor = 1.0;   // Average
+                else if (restingHR < 75) hrFactor = 0.98;  // Below average
+                else if (restingHR < 80) hrFactor = 0.95;  // Poor fitness
+                else hrFactor = 0.92;                      // Very poor fitness
+                
+                adjustmentFactors.fitness = hrFactor;
+                adjustedBMR *= hrFactor;
+            }
+            
+            // ========== LIFESTYLE ADJUSTMENTS ==========
+            adjustmentFactors.lifestyle = sleepQuality * stressLevel * dietHistory;
+            adjustedBMR *= adjustmentFactors.lifestyle;
+            
+            // Cap adjustments to reasonable range (70-130% of base)
+            adjustedBMR = Math.max(baseBMR * 0.7, Math.min(baseBMR * 1.3, adjustedBMR));
+            
+            adjustmentFactors.totalAdjustment = adjustedBMR / baseBMR;
+            
+            return {
+                bmr: Math.round(adjustedBMR),
+                baseBmr: Math.round(baseBMR),
+                adjustmentFactors: adjustmentFactors
+            };
+        }
+        
+        function calculateEstimationAccuracy(restingHR, bodyFat, calcBasis) {
+            let accuracy = 75; // Base accuracy for standard calculation
+            
+            // Accuracy improvements based on data provided
+            if (calcBasis !== 'custom') accuracy += 5; // Specific formula better than average
+            
+            if (restingHR !== null) accuracy += 10; // Resting HR is a strong indicator
+            
+            if (bodyFat !== null) accuracy += 8; // Body composition significantly affects metabolism
+            
+            // Check if advanced section is expanded and has any data
+            if (advancedContent.classList.contains('expanded')) {
+                accuracy += 2; // User engaged with advanced options
+            }
+            
+            // Cap at 95% (never 100% because there's always individual variation)
+            return Math.min(accuracy, 95);
+        }
+        
+        function generateMealPlan(profile) {
+            let meals = {
+                breakfast: '',
+                lunch: '',
+                dinner: '',
+                snacks: ''
+            };
+            
+            switch(profile) {
+                case 'balanced':
+                    meals = {
+                        breakfast: 'Oatmeal with berries, Greek yogurt, 2 boiled eggs',
+                        lunch: 'Grilled chicken breast, quinoa, mixed vegetables, side salad',
+                        dinner: 'Salmon fillet, sweet potato, steamed broccoli, avocado',
+                        snacks: 'Protein shake, almonds, apple, protein bar'
+                    };
+                    break;
+                    
+                case 'high_protein':
+                    meals = {
+                        breakfast: 'Egg white omelette with vegetables, turkey bacon, protein smoothie',
+                        lunch: 'Lean beef steak, brown rice, asparagus, side salad with chicken',
+                        dinner: 'Tuna steak, roasted potatoes, green beans, cottage cheese',
+                        snacks: 'Greek yogurt, beef jerky, hard-boiled eggs, protein bar'
+                    };
+                    break;
+                    
+                case 'moderate_protein':
+                    meals = {
+                        breakfast: 'Whole grain toast with avocado, scrambled eggs, fruit',
+                        lunch: 'Chicken salad wrap, vegetable soup, quinoa',
+                        dinner: 'Lean pork chops, roasted vegetables, brown rice',
+                        snacks: 'Mixed nuts, fruit, cheese stick, whole grain crackers'
+                    };
+                    break;
+                    
+                case 'low_carb':
+                    meals = {
+                        breakfast: 'Avocado & eggs, bacon, spinach, bulletproof coffee',
+                        lunch: 'Grilled salmon, cauliflower rice, avocado salad with olive oil',
+                        dinner: 'Steak with butter sauce, roasted vegetables, side salad with nuts',
+                        snacks: 'Cheese slices, macadamia nuts, celery with almond butter'
+                    };
+                    break;
+                    
+                case 'high_carb':
+                    meals = {
+                        breakfast: 'Whole grain toast with peanut butter, banana, oatmeal, orange juice',
+                        lunch: 'Pasta with lean ground turkey, whole grain bread, fruit salad',
+                        dinner: 'Rice bowl with vegetables and tofu, sweet potato, whole grain bread',
+                        snacks: 'Fruit smoothie, rice cakes, dates, whole grain crackers'
+                    };
+                    break;
+                    
+                default:
+                    meals = {
+                        breakfast: 'Oatmeal with berries, Greek yogurt, 2 boiled eggs',
+                        lunch: 'Grilled chicken breast, quinoa, mixed vegetables, salad',
+                        dinner: 'Salmon fillet, sweet potato, steamed broccoli, avocado',
+                        snacks: 'Protein shake, almonds, fruit, protein bar'
+                    };
+            }
+            
+            breakfast.textContent = meals.breakfast;
+            lunch.textContent = meals.lunch;
+            dinner.textContent = meals.dinner;
+            snacks.textContent = meals.snacks;
+        }
+        
+        function generateRecommendations(bmi, calorieTarget, accuracy, restingHR, bodyFat, adjustmentFactors) {
+            let recs = [];
+            
+            // Based on BMI
+            if (bmi < 18.5) {
+                recs.push('Consider gradual weight gain with strength training to build muscle.');
+            } else if (bmi >= 25) {
+                recs.push('Focus on sustainable weight loss through consistent calorie tracking.');
+            } else {
+                recs.push('Maintain your healthy weight with balanced nutrition and regular exercise.');
+            }
+            
+            // Based on calorie target
+            if (calorieTarget < 1500) {
+                recs.push('Very low calorie intake. Consult a professional if maintaining long-term.');
+            } else if (calorieTarget > 3000) {
+                recs.push('High calorie needs. Ensure nutrient-dense food choices.');
+            }
+            
+            // Based on data quality
+            if (accuracy < 80) {
+                recs.push('Add resting heart rate and body fat estimate for more accurate calculations.');
+            } else if (accuracy >= 90) {
+                recs.push('High-quality data provides reliable estimates. Monitor and adjust as needed.');
+            }
+            
+            // Based on metabolic adjustments
+            if (adjustmentFactors.totalAdjustment < 0.9) {
+                recs.push('Your metabolism may be slower than average. Consider metabolic testing.');
+            } else if (adjustmentFactors.totalAdjustment > 1.1) {
+                recs.push('Your metabolism appears faster than average. Monitor energy levels.');
+            }
+            
+            // General recommendations
+            recs.push('Track your weight weekly and adjust calories by ±250 based on trends.');
+            recs.push('Aim for 7-9 hours of quality sleep for optimal metabolic health.');
+            recs.push('Stay hydrated - drink at least 2-3L of water daily.');
+            
+            // Format recommendations
+            let formattedRecs = '';
+            recs.forEach((rec, index) => {
+                formattedRecs += `<p>${index + 1}. ${rec}</p>`;
+            });
+            
+            recommendations.innerHTML = formattedRecs;
+        }
+        
+        function addToHistory() {
+            const name = nameInput.value || 'User';
+            const bmi = bmiValue.textContent;
+            const tdee = tdeeValue.textContent;
+            const calories = calorieTarget.textContent;
+            const date = new Date().toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <strong>${date}</strong><br>
+                ${name}: BMI ${bmi} | TDEE ${tdee} cal | Target ${calories} cal
+            `;
+            
+            // Add to top of history
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // Limit history to 5 items
+            if (historyList.children.length > 5) {
+                historyList.removeChild(historyList.lastChild);
+            }
+        }
+        
+        function resetToDefaults() {
+            // Reset basic inputs
+            nameInput.value = 'Victor Ye';
+            ageInput.value = '25';
+            weightInput.value = '64';
+            weightSlider.value = '64';
+            weightValue.textContent = '64.0 kg';
+            heightInput.value = '174';
+            heightSlider.value = '174';
+            heightValue.textContent = '174 cm';
+            
+            // Reset calculation basis
+            document.getElementById('calc_male').checked = true;
+            
+            // Reset advanced inputs
+            restingHRInput.value = '';
+            bodyFatSelect.value = '20';
+            sleepQualitySelect.value = '0.95';
+            stressLevelSelect.value = '1.0';
+            dietHistorySelect.value = '1.0';
+            
+            // Reset other selects
+            activitySelect.value = '1.375';
+            goalSelect.value = 'maintain';
+            macroProfileSelect.value = 'balanced';
+            
+            // Collapse advanced section
+            advancedContent.classList.remove('expanded');
+            advancedIcon.classList.remove('fa-chevron-up');
+            advancedIcon.classList.add('fa-chevron-down');
+            
+            showNotification('Reset to default values!', 'info');
+        }
+        
+        function showNotification(message, type) {
+            // Remove existing notifications
+            const existingNotifications = document.querySelectorAll('.custom-notification');
+            existingNotifications.forEach(n => n.remove());
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'custom-notification';
+            notification.textContent = message;
+            
+            // Style based on type
+            let bgColor, icon;
+            switch(type) {
+                case 'success':
+                    bgColor = '#2ecc71';
+                    icon = 'fa-check-circle';
+                    break;
+                case 'error':
+                    bgColor = '#e74c3c';
+                    icon = 'fa-exclamation-circle';
+                    break;
+                case 'info':
+                    bgColor = '#3498db';
+                    icon = 'fa-info-circle';
+                    break;
+                default:
+                    bgColor = '#3498db';
+                    icon = 'fa-info-circle';
+            }
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px 15px 50px;
+                background: ${bgColor};
+                color: white;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease;
+                max-width: 350px;
+            `;
+            
+            // Add icon
+            const iconElement = document.createElement('i');
+            iconElement.className = `fas ${icon}`;
+            iconElement.style.cssText = `
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 1.2rem;
+            `;
+            notification.prepend(iconElement);
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+        
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // ========== INITIALIZATION ==========
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Calculate on page load
+        window.addEventListener('load', function() {
+            calculateNutrition();
+            
+            // Add initial history item
+            const date = new Date().toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <strong>${date}</strong><br>
+                Victor Ye: BMI 21.1 | TDEE 2491.6 cal | Target 2491.6 cal
+            `;
+            
+            historyList.appendChild(historyItem);
+        });
+    </script>
+</body>
+</html>
