@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nutrition Calculator - Enhanced Metabolic Rate Estimation</title>
+    <title>Advanced Nutrition Calculator with Data Export</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -423,6 +423,120 @@
             font-size: 0.85rem;
         }
 
+        /* JSON Export Styles */
+        .json-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .json-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .json-btn {
+            padding: 10px 15px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .json-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .json-btn.import {
+            background: #3498db;
+        }
+        
+        .json-btn.import:hover {
+            background: #2980b9;
+        }
+        
+        .json-btn.reset {
+            background: #e74c3c;
+        }
+        
+        .json-btn.reset:hover {
+            background: #c0392b;
+        }
+        
+        .json-viewer {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            padding: 10px 15px;
+            background: #9b59b6;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #2ecc71;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .export-options {
+            margin: 15px 0;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+        }
+        
+        .option-group {
+            margin: 10px 0;
+        }
+        
+        .option-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
         footer {
             text-align: center;
             padding: 15px;
@@ -444,6 +558,10 @@
             header h1 {
                 font-size: 2rem;
             }
+            
+            .json-controls {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -451,7 +569,7 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-calculator"></i> Advanced Nutrition Calculator</h1>
-            <p>Calculate BMI, TDEE, and get personalized nutrition recommendations with enhanced metabolic rate estimation</p>
+            <p>Calculate BMI, TDEE, and get personalized nutrition recommendations with data export capabilities</p>
         </header>
         
         <div class="app-content">
@@ -614,7 +732,7 @@
                     <i class="fas fa-calculator"></i> Calculate Nutrition Plan
                 </button>
                 
-                <button class="btn btn-secondary" id="resetBtn">
+                <button class="btn btn-secondary" id="resetFormBtn">
                     <i class="fas fa-redo"></i> Reset to Defaults
                 </button>
             </div>
@@ -698,7 +816,6 @@
                     </div>
                     <div class="help-text">Meal suggestions based on your selected macronutrient profile</div>
                 </div>
-                
                 <div class="result-card">
                     <div class="result-title"><i class="fas fa-lightbulb"></i> Personalized Recommendations</div>
                     <div class="result-details" id="recommendations">
@@ -706,6 +823,84 @@
                         <p>2. Track your weight and adjust calories by ±250 based on changes</p>
                         <p>3. Consider adding the advanced metabolic factors for better accuracy</p>
                         <p>4. Stay hydrated and aim for consistent sleep patterns</p>
+                    </div>
+                </div>
+                
+                <!-- JSON Export Section -->
+                <div class="json-section">
+                    <h2><i class="fas fa-database"></i> Data Management</h2>
+                    <p>Export your nutrition data to JSON for backup or analysis.</p>
+                    
+                    <div class="json-controls">
+                        <button class="json-btn" id="exportBtn">
+                            <i class="fas fa-download"></i> Export to JSON
+                        </button>
+                        
+                        <label class="file-label" for="importFile">
+                            <i class="fas fa-upload"></i> Import from JSON
+                        </label>
+                        <input type="file" id="importFile" class="file-input" accept=".json">
+                        
+                        <button class="json-btn reset" id="resetDataBtn">
+                            <i class="fas fa-trash"></i> Clear All Data
+                        </button>
+                    </div>
+                    
+                    <div class="export-options hidden" id="exportOptions">
+                        <h3>Export Options</h3>
+                        
+                        <div class="option-group">
+                            <label>
+                                <input type="checkbox" id="exportProfile" checked>
+                                User Profile (name, age, goals)
+                            </label>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label>
+                                <input type="checkbox" id="exportResults" checked>
+                                Calculation Results (BMI, TDEE, macros)
+                            </label>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label>
+                                <input type="checkbox" id="exportHistory" checked>
+                                Calculation History
+                            </label>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label>
+                                <input type="checkbox" id="exportSettings" checked>
+                                App Settings
+                            </label>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label>
+                                <input type="checkbox" id="exportTimestamp" checked>
+                                Include Timestamp
+                            </label>
+                        </div>
+                        
+                        <button class="json-btn" id="confirmExport">
+                            <i class="fas fa-file-export"></i> Generate JSON Export
+                        </button>
+                    </div>
+                    
+                    <div class="json-viewer hidden" id="jsonPreview">
+                        <!-- JSON preview will appear here -->
+                    </div>
+                    
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i> JSON exports can be used for:
+                        <ul>
+                            <li>Backup your nutrition data</li>
+                            <li>Import into other applications</li>
+                            <li>Analyze your progress in spreadsheet software</li>
+                            <li>Share with nutritionists or trainers</li>
+                        </ul>
                     </div>
                 </div>
                 
@@ -719,7 +914,7 @@
         </div>
         
         <footer>
-            <p>Advanced Nutrition Calculator v3.0 | Created by Plyflame Healthcare Service</p>
+            <p>Advanced Nutrition Calculator v3.0 with Data Export | Created by Plyflame Health Service</p>
             <p><small>Disclaimer: This tool provides estimates based on scientific formulas. Individual results may vary. Consult with healthcare professionals for personalized advice.</small></p>
         </footer>
     </div>
@@ -738,7 +933,7 @@
         const goalSelect = document.getElementById('goal');
         const macroProfileSelect = document.getElementById('macroProfile');
         const calculateBtn = document.getElementById('calculateBtn');
-        const resetBtn = document.getElementById('resetBtn');
+        const resetFormBtn = document.getElementById('resetFormBtn');
         
         // Advanced inputs
         const restingHRInput = document.getElementById('restingHR');
@@ -775,30 +970,50 @@
         const lunch = document.getElementById('lunch');
         const dinner = document.getElementById('dinner');
         const snacks = document.getElementById('snacks');
-        const recommendations = document.getElementById('recommendations');
         const historyList = document.getElementById('historyList');
         
+        // JSON Export elements
+        const exportBtn = document.getElementById('exportBtn');
+        const importFile = document.getElementById('importFile');
+        const resetDataBtn = document.getElementById('resetDataBtn');
+        const exportOptions = document.getElementById('exportOptions');
+        const confirmExport = document.getElementById('confirmExport');
+        const jsonPreview = document.getElementById('jsonPreview');
+
+        // ========== DATA STORAGE ==========
+        let userData = {
+            profile: {},
+            calculations: {},
+            history: [],
+            settings: {},
+            metadata: {}
+        };
+
         // ========== EVENT LISTENERS ==========
         
         // Sync sliders with number inputs
         weightSlider.addEventListener('input', function() {
             weightInput.value = this.value;
             weightValue.textContent = this.value + ' kg';
+            saveCurrentCalculation();
         });
         
         weightInput.addEventListener('input', function() {
             weightSlider.value = this.value;
             weightValue.textContent = this.value + ' kg';
+            saveCurrentCalculation();
         });
         
         heightSlider.addEventListener('input', function() {
             heightInput.value = this.value;
             heightValue.textContent = this.value + ' cm';
+            saveCurrentCalculation();
         });
         
         heightInput.addEventListener('input', function() {
             heightSlider.value = this.value;
             heightValue.textContent = this.value + ' cm';
+            saveCurrentCalculation();
         });
         
         // Advanced section toggle
@@ -814,12 +1029,488 @@
             addToHistory();
         });
         
-        // Reset button
-        resetBtn.addEventListener('click', function() {
+        // Form reset button
+        resetFormBtn.addEventListener('click', function() {
             resetToDefaults();
         });
         
-        // ========== CORE FUNCTIONS ==========
+        // ========== JSON EXPORT FUNCTIONS ==========
+        
+        // Initialize data storage
+        function initializeDataStorage() {
+            // Load from localStorage if available
+            const savedData = localStorage.getItem('nutritionCalculatorData');
+            if (savedData) {
+                try {
+                    userData = JSON.parse(savedData);
+                    console.log('Loaded saved data');
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                }
+            }
+            
+            // Initialize empty structure if needed
+            if (!userData.profile) userData.profile = {};
+            if (!userData.calculations) userData.calculations = {};
+            if (!userData.history) userData.history = [];
+            if (!userData.settings) userData.settings = {};
+            if (!userData.metadata) userData.metadata = {};
+        }
+        
+        // Save current calculation to data store
+        function saveCurrentCalculation() {
+            const name = document.getElementById('name').value || 'Anonymous';
+            const age = parseInt(document.getElementById('age').value) || 25;
+            const weight = parseFloat(document.getElementById('weight').value) || 70;
+            const height = parseFloat(document.getElementById('height').value) || 170;
+            const calcBasis = document.querySelector('input[name="calc_basis"]:checked')?.value || 'male';
+            const activity = parseFloat(document.getElementById('activity').value) || 1.375;
+            const goal = document.getElementById('goal').value || 'maintain';
+            const macroProfile = document.getElementById('macroProfile').value || 'balanced';
+            
+            // Calculate results
+            const bmi = calculateBMI(weight, height);
+            const tdee = calculateTDEE(weight, height, age, calcBasis, activity);
+            const calorieTarget = calculateCalorieTarget(tdee, goal);
+            const macros = calculateMacros(calorieTarget, macroProfile);
+            
+            // Update user data
+            userData.profile = {
+                name: name,
+                age: age,
+                weight: weight,
+                height: height,
+                calculationBasis: calcBasis,
+                activityLevel: activity,
+                weightGoal: goal,
+                macroProfile: macroProfile,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            userData.calculations = {
+                bmi: bmi,
+                tdee: tdee,
+                calorieTarget: calorieTarget,
+                macros: macros,
+                bmiCategory: getBMICategory(bmi),
+                timestamp: new Date().toISOString()
+            };
+            
+            // Add to history (keep last 50 calculations)
+            const historyEntry = {
+                ...userData.calculations,
+                profileSnapshot: {...userData.profile}
+            };
+            
+            userData.history.unshift(historyEntry);
+            if (userData.history.length > 50) {
+                userData.history = userData.history.slice(0, 50);
+            }
+            
+            // Save settings
+            userData.settings = {
+                theme: 'default',
+                notifications: true,
+                autoSave: true,
+                measurementUnits: 'metric'
+            };
+            
+            // Add metadata
+            userData.metadata = {
+                appVersion: '3.0.0',
+                exportVersion: '1.0',
+                createdAt: userData.metadata?.createdAt || new Date().toISOString(),
+                totalCalculations: userData.history.length
+            };
+            
+            // Save to localStorage
+            saveToLocalStorage();
+        }
+        
+        // Calculate BMI
+        function calculateBMI(weight, height) {
+            const heightMeters = height / 100;
+            return weight / (heightMeters * heightMeters);
+        }
+        
+        // Calculate TDEE
+        function calculateTDEE(weight, height, age, calcBasis, activity) {
+            let bmr;
+            const base = 10 * weight + 6.25 * height - 5 * age;
+            
+            if (calcBasis === 'male') {
+                bmr = base + 5;
+            } else if (calcBasis === 'female') {
+                bmr = base - 161;
+            } else {
+                const maleBMR = base + 5;
+                const femaleBMR = base - 161;
+                bmr = (maleBMR + femaleBMR) / 2;
+            }
+            
+            return bmr * activity;
+        }
+        
+        // Calculate calorie target
+        function calculateCalorieTarget(tdee, goal) {
+            switch(goal) {
+                case 'lose_mild': return tdee - 250;
+                case 'lose': return tdee - 500;
+                case 'lose_aggressive': return tdee - 750;
+                case 'gain_mild': return tdee + 250;
+                case 'gain': return tdee + 500;
+                default: return tdee; // maintain
+            }
+        }
+        
+        // Calculate macros
+        function calculateMacros(calories, profile) {
+            let proteinPercent, carbsPercent, fatPercent;
+            
+            switch(profile) {
+                case 'balanced': proteinPercent = 0.25; carbsPercent = 0.50; fatPercent = 0.25; break;
+                case 'high_protein': proteinPercent = 0.40; carbsPercent = 0.30; fatPercent = 0.30; break;
+                case 'moderate_protein': proteinPercent = 0.30; carbsPercent = 0.40; fatPercent = 0.30; break;
+                case 'low_carb': proteinPercent = 0.30; carbsPercent = 0.20; fatPercent = 0.50; break;
+                case 'high_carb': proteinPercent = 0.15; carbsPercent = 0.60; fatPercent = 0.25; break;
+                default: proteinPercent = 0.25; carbsPercent = 0.50; fatPercent = 0.25;
+            }
+            
+            return {
+                protein: Math.round((calories * proteinPercent) / 4),
+                carbs: Math.round((calories * carbsPercent) / 4),
+                fat: Math.round((calories * fatPercent) / 9),
+                proteinPercent: proteinPercent * 100,
+                carbsPercent: carbsPercent * 100,
+                fatPercent: fatPercent * 100
+            };
+        }
+        
+        // Get BMI category
+        function getBMICategory(bmi) {
+            if (bmi < 18.5) return 'Underweight';
+            if (bmi < 25) return 'Normal weight';
+            if (bmi < 30) return 'Overweight';
+            return 'Obese';
+        }
+        
+        // Save to localStorage
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('nutritionCalculatorData', JSON.stringify(userData));
+                console.log('Data saved to localStorage');
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+            }
+        }
+        
+        // Export to JSON
+        function exportToJSON(options = {}) {
+            // Create export data based on options
+            const exportData = {
+                metadata: {
+                    exportedAt: new Date().toISOString(),
+                    appName: "Advanced Nutrition Calculator",
+                    appVersion: "3.0.0",
+                    exportVersion: "1.0"
+                }
+            };
+            
+            // Add selected data sections
+            if (options.includeProfile) {
+                exportData.profile = userData.profile;
+            }
+            
+            if (options.includeResults) {
+                exportData.currentResults = userData.calculations;
+            }
+            
+            if (options.includeHistory) {
+                exportData.history = userData.history;
+            }
+            
+            if (options.includeSettings) {
+                exportData.settings = userData.settings;
+            }
+            
+            if (options.includeTimestamp) {
+                exportData.timestamp = new Date().toISOString();
+            }
+            
+            // Generate filename
+            const username = userData.profile.name || 'user';
+            const date = new Date().toISOString().split('T')[0];
+            const filename = `nutrition-data_${username}_${date}.json`;
+            
+            // Create and download JSON file
+            const jsonStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Show preview
+            showJSONPreview(jsonStr);
+            
+            // Show notification
+            showNotification('JSON file downloaded successfully!', 'success');
+            
+            return exportData;
+        }
+        
+        // Import from JSON
+        function importFromJSON(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        
+                        // Validate imported data
+                        if (!isValidNutritionData(importedData)) {
+                            throw new Error('Invalid JSON format for nutrition data');
+                        }
+                        
+                        // Merge imported data
+                        if (importedData.profile) {
+                            userData.profile = { ...userData.profile, ...importedData.profile };
+                        }
+                        
+                        if (importedData.currentResults) {
+                            userData.calculations = importedData.currentResults;
+                        }
+                        
+                        if (importedData.history && Array.isArray(importedData.history)) {
+                            userData.history = [...importedData.history, ...userData.history];
+                        }
+                        
+                        if (importedData.settings) {
+                            userData.settings = { ...userData.settings, ...importedData.settings };
+                        }
+                        
+                        // Save to localStorage
+                        saveToLocalStorage();
+                        
+                        // Update UI with imported data
+                        updateUIFromImportedData();
+                        
+                        // Show notification
+                        showNotification('Data imported successfully!', 'success');
+                        
+                        resolve(userData);
+                        
+                    } catch (error) {
+                        showNotification('Error importing JSON: ' + error.message, 'error');
+                        reject(error);
+                    }
+                };
+                
+                reader.onerror = function() {
+                    showNotification('Error reading file', 'error');
+                    reject(new Error('File reading error'));
+                };
+                
+                reader.readAsText(file);
+            });
+        }
+        
+        // Validate imported JSON
+        function isValidNutritionData(data) {
+            if (!data || typeof data !== 'object') return false;
+            
+            // Check for expected structure
+            const hasProfile = data.profile && typeof data.profile === 'object';
+            const hasResults = data.currentResults && typeof data.currentResults === 'object';
+            const hasHistory = !data.history || Array.isArray(data.history);
+            
+            return hasProfile || hasResults || hasHistory;
+        }
+        
+        // Update UI from imported data
+        function updateUIFromImportedData() {
+            if (userData.profile.name) {
+                document.getElementById('name').value = userData.profile.name;
+            }
+            
+            if (userData.profile.age) {
+                document.getElementById('age').value = userData.profile.age;
+            }
+            
+            if (userData.profile.weight) {
+                document.getElementById('weight').value = userData.profile.weight;
+                document.getElementById('weightSlider').value = userData.profile.weight;
+                document.getElementById('weightValue').textContent = userData.profile.weight + ' kg';
+            }
+            
+            if (userData.profile.height) {
+                document.getElementById('height').value = userData.profile.height;
+                document.getElementById('heightSlider').value = userData.profile.height;
+                document.getElementById('heightValue').textContent = userData.profile.height + ' cm';
+            }
+            
+            if (userData.profile.calculationBasis) {
+                const radio = document.querySelector(`input[name="calc_basis"][value="${userData.profile.calculationBasis}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            if (userData.profile.activityLevel) {
+                document.getElementById('activity').value = userData.profile.activityLevel;
+            }
+            
+            if (userData.profile.weightGoal) {
+                document.getElementById('goal').value = userData.profile.weightGoal;
+            }
+            
+            if (userData.profile.macroProfile) {
+                document.getElementById('macroProfile').value = userData.profile.macroProfile;
+            }
+            
+            // Recalculate with imported data
+            if (userData.calculations) {
+                // Update results display
+                const results = userData.calculations;
+                
+                if (results.bmi) {
+                    document.getElementById('bmiValue').textContent = results.bmi.toFixed(1);
+                    const category = results.bmiCategory || getBMICategory(results.bmi);
+                    document.getElementById('bmiCategory').textContent = category;
+                    document.getElementById('bmiCategory').className = `bmi-category ${category.toLowerCase().replace(' ', '-')}`;
+                }
+                
+                if (results.tdee) {
+                    document.getElementById('tdeeValue').textContent = results.tdee.toFixed(1);
+                }
+                
+                if (results.calorieTarget) {
+                    document.getElementById('calorieTarget').textContent = results.calorieTarget.toFixed(1);
+                }
+                
+                if (results.macros) {
+                    document.getElementById('proteinValue').textContent = `${results.macros.protein}g`;
+                    document.getElementById('carbsValue').textContent = `${results.macros.carbs}g`;
+                    document.getElementById('fatValue').textContent = `${results.macros.fat}g`;
+                    
+                    // Update macro bar
+                    const macroBar = document.querySelector('.macro-bar');
+                    if (macroBar && results.macros.proteinPercent) {
+                        macroBar.innerHTML = `
+                            <div class="macro-fill protein" style="width: ${results.macros.proteinPercent}%;"></div>
+                            <div class="macro-fill carbs" style="width: ${results.macros.carbsPercent}%;"></div>
+                            <div class="macro-fill fat" style="width: ${results.macros.fatPercent}%;"></div>
+                        `;
+                    }
+                }
+            }
+            
+            // Recalculate to update all values
+            calculateNutrition();
+        }
+        
+        // Show JSON preview
+        function showJSONPreview(jsonStr) {
+            const preview = document.getElementById('jsonPreview');
+            preview.textContent = jsonStr;
+            preview.classList.remove('hidden');
+            
+            // Add copy button
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'json-btn';
+            copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy JSON';
+            copyBtn.style.marginTop = '10px';
+            copyBtn.onclick = () => copyToClipboard(jsonStr);
+            
+            if (!preview.querySelector('.copy-btn')) {
+                const container = document.createElement('div');
+                container.className = 'copy-btn';
+                container.appendChild(copyBtn);
+                preview.parentNode.insertBefore(container, preview.nextSibling);
+            }
+        }
+        
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('JSON copied to clipboard!', 'success');
+            }).catch(err => {
+                showNotification('Failed to copy: ' + err, 'error');
+            });
+        }
+        
+        // Reset all data
+        function resetAllData() {
+            if (confirm('Are you sure you want to clear ALL saved data? This cannot be undone.')) {
+                userData = {
+                    profile: {},
+                    calculations: {},
+                    history: [],
+                    settings: {},
+                    metadata: {
+                        createdAt: new Date().toISOString(),
+                        appVersion: '3.0.0'
+                    }
+                };
+                
+                localStorage.removeItem('nutritionCalculatorData');
+                
+                // Clear history display
+                historyList.innerHTML = '';
+                
+                showNotification('All saved data has been cleared.', 'info');
+            }
+        }
+        
+        // Initialize JSON event listeners
+        function initializeJSONFeatures() {
+            // Export button
+            exportBtn.addEventListener('click', () => {
+                exportOptions.classList.toggle('hidden');
+            });
+            
+            // Confirm export button
+            confirmExport.addEventListener('click', () => {
+                const options = {
+                    includeProfile: document.getElementById('exportProfile').checked,
+                    includeResults: document.getElementById('exportResults').checked,
+                    includeHistory: document.getElementById('exportHistory').checked,
+                    includeSettings: document.getElementById('exportSettings').checked,
+                    includeTimestamp: document.getElementById('exportTimestamp').checked
+                };
+                
+                // Save current calculation first
+                saveCurrentCalculation();
+                
+                // Export to JSON
+                exportToJSON(options);
+            });
+            
+            // Import file input
+            importFile.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    importFromJSON(file).then(() => {
+                        e.target.value = ''; // Reset file input
+                    });
+                }
+            });
+            
+            // Reset data button
+            resetDataBtn.addEventListener('click', resetAllData);
+            
+            // Auto-save when inputs change
+            const inputs = document.querySelectorAll('#name, #age, #weight, #height, #activity, #goal, #macroProfile');
+            inputs.forEach(input => {
+                input.addEventListener('change', saveCurrentCalculation);
+            });
+        }
+        
+        // ========== CORE CALCULATION FUNCTIONS ==========
         
         function calculateNutrition() {
             // Get basic inputs
@@ -985,14 +1676,8 @@
             // ========== GENERATE MEAL PLAN ==========
             generateMealPlan(macroProfile);
             
-            // ========== GENERATE RECOMMENDATIONS ==========
-            generateRecommendations(
-                bmi, calorieTargetValue, accuracy, 
-                restingHR, bodyFat, metabolicResults.adjustmentFactors
-            );
-            
-            // Show success notification
-            showNotification('Nutrition plan calculated successfully!', 'success');
+            // Save calculation to data store
+            saveCurrentCalculation();
         }
         
         function calculateMetabolicRate(age, weight, height, calcBasis, restingHR, bodyFat, sleepQuality, stressLevel, dietHistory) {
@@ -1153,53 +1838,6 @@
             snacks.textContent = meals.snacks;
         }
         
-        function generateRecommendations(bmi, calorieTarget, accuracy, restingHR, bodyFat, adjustmentFactors) {
-            let recs = [];
-            
-            // Based on BMI
-            if (bmi < 18.5) {
-                recs.push('Consider gradual weight gain with strength training to build muscle.');
-            } else if (bmi >= 25) {
-                recs.push('Focus on sustainable weight loss through consistent calorie tracking.');
-            } else {
-                recs.push('Maintain your healthy weight with balanced nutrition and regular exercise.');
-            }
-            
-            // Based on calorie target
-            if (calorieTarget < 1500) {
-                recs.push('Very low calorie intake. Consult a professional if maintaining long-term.');
-            } else if (calorieTarget > 3000) {
-                recs.push('High calorie needs. Ensure nutrient-dense food choices.');
-            }
-            
-            // Based on data quality
-            if (accuracy < 80) {
-                recs.push('Add resting heart rate and body fat estimate for more accurate calculations.');
-            } else if (accuracy >= 90) {
-                recs.push('High-quality data provides reliable estimates. Monitor and adjust as needed.');
-            }
-            
-            // Based on metabolic adjustments
-            if (adjustmentFactors.totalAdjustment < 0.9) {
-                recs.push('Your metabolism may be slower than average. Consider metabolic testing.');
-            } else if (adjustmentFactors.totalAdjustment > 1.1) {
-                recs.push('Your metabolism appears faster than average. Monitor energy levels.');
-            }
-            
-            // General recommendations
-            recs.push('Track your weight weekly and adjust calories by ±250 based on trends.');
-            recs.push('Aim for 7-9 hours of quality sleep for optimal metabolic health.');
-            recs.push('Stay hydrated - drink at least 2-3L of water daily.');
-            
-            // Format recommendations
-            let formattedRecs = '';
-            recs.forEach((rec, index) => {
-                formattedRecs += `<p>${index + 1}. ${rec}</p>`;
-            });
-            
-            recommendations.innerHTML = formattedRecs;
-        }
-        
         function addToHistory() {
             const name = nameInput.value || 'User';
             const bmi = bmiValue.textContent;
@@ -1259,17 +1897,22 @@
             advancedIcon.classList.remove('fa-chevron-up');
             advancedIcon.classList.add('fa-chevron-down');
             
+            // Recalculate
+            calculateNutrition();
+            
             showNotification('Reset to default values!', 'info');
         }
         
+        // ========== UTILITY FUNCTIONS ==========
+        
         function showNotification(message, type) {
             // Remove existing notifications
-            const existingNotifications = document.querySelectorAll('.custom-notification');
+            const existingNotifications = document.querySelectorAll('.notification, .custom-notification');
             existingNotifications.forEach(n => n.remove());
             
             // Create notification element
             const notification = document.createElement('div');
-            notification.className = 'custom-notification';
+            notification.className = 'notification';
             notification.textContent = message;
             
             // Style based on type
@@ -1292,51 +1935,28 @@
                     icon = 'fa-info-circle';
             }
             
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 25px 15px 50px;
-                background: ${bgColor};
-                color: white;
-                border-radius: 8px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                z-index: 10000;
-                font-weight: 600;
-                animation: slideIn 0.3s ease;
-                max-width: 350px;
-            `;
+            notification.style.background = bgColor;
             
             // Add icon
             const iconElement = document.createElement('i');
             iconElement.className = `fas ${icon}`;
-            iconElement.style.cssText = `
-                position: absolute;
-                left: 15px;
-                top: 50%;
-                transform: translateY(-50%);
-                font-size: 1.2rem;
-            `;
+            iconElement.style.marginRight = '10px';
             notification.prepend(iconElement);
             
             document.body.appendChild(notification);
             
-            // Remove after 4 seconds
+            // Auto-remove after 4 seconds
             setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        document.body.removeChild(notification);
-                    }
-                }, 300);
+                if (notification.parentNode) {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }
             }, 4000);
         }
         
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
-        
-        // ========== INITIALIZATION ==========
         
         // Add CSS animations
         const style = document.createElement('style');
@@ -1353,8 +1973,16 @@
         `;
         document.head.appendChild(style);
         
-        // Calculate on page load
-        window.addEventListener('load', function() {
+        // ========== INITIALIZATION ==========
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize data storage
+            initializeDataStorage();
+            
+            // Initialize JSON features
+            initializeJSONFeatures();
+            
+            // Calculate on page load
             calculateNutrition();
             
             // Add initial history item
@@ -1373,6 +2001,28 @@
             `;
             
             historyList.appendChild(historyItem);
+            
+            // Load existing data on page load
+            if (Object.keys(userData.profile).length > 0) {
+                updateUIFromImportedData();
+            }
+            
+            // Add keyboard shortcut (Ctrl+E for export)
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'e') {
+                    e.preventDefault();
+                    saveCurrentCalculation();
+                    exportToJSON({
+                        includeProfile: true,
+                        includeResults: true,
+                        includeHistory: true,
+                        includeSettings: true,
+                        includeTimestamp: true
+                    });
+                }
+            });
+            
+            console.log('Advanced Nutrition Calculator with JSON Export initialized');
         });
     </script>
 </body>
