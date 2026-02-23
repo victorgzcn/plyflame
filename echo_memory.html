@@ -1,0 +1,1951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Echo Memory · Personal Knowledge Base</title>
+    
+    <!-- Font Awesome Icons (CDN - required) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           ECHO MEMORY WEB APP - COMPLETE STYLES
+           Minimal, elegant, responsive design
+           ========================================================================== */
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --border: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* ===== Container ===== */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        /* ===== Header ===== */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .app-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .app-header h1 i {
+            margin-right: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .stats-badge {
+            display: inline-flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-item i {
+            font-size: 1.2rem;
+        }
+
+        /* ===== Main Content ===== */
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* ===== Sidebar ===== */
+        .sidebar {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-section h3 {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .action-btn i {
+            width: 20px;
+        }
+
+        /* Tags Cloud */
+        .tags-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background: white;
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .tag.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .tag .count {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 2px 6px;
+            border-radius: 12px;
+            margin-left: 5px;
+            font-size: 0.7rem;
+        }
+
+        /* Feature Toggles */
+        .feature-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* ===== Memory Wall ===== */
+        .memory-wall {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-bar button {
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-bar button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Memories Grid */
+        .memories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .memory-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .memory-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .memory-card.favorite {
+            border-left: 4px solid var(--warning);
+        }
+
+        .memory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .memory-id {
+            background: var(--light);
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .memory-favorite {
+            color: var(--warning);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .memory-favorite:hover {
+            transform: scale(1.2);
+        }
+
+        .memory-content {
+            margin: 15px 0;
+            line-height: 1.6;
+            color: var(--dark);
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .memory-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+        }
+
+        .memory-tag {
+            background: var(--light);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .memory-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .memory-actions {
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .memory-card:hover .memory-actions {
+            opacity: 1;
+        }
+
+        .memory-action-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+
+        .memory-action-btn:hover {
+            background: var(--light);
+            color: var(--primary);
+        }
+
+        .memory-action-btn.delete:hover {
+            color: var(--danger);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--border);
+        }
+
+        /* ===== Modals ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--danger);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-top: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideInRight 0.3s;
+            max-width: 300px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--secondary);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--primary);
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .toast-message {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Voice Input Animation */
+        .voice-active {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .app-header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-badge {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .memories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>
+                <i class="fas fa-brain"></i>
+                Echo Memory
+            </h1>
+            <div class="subtitle">Your second brain · thoughts persist</div>
+            <div class="stats-badge">
+                <span class="stat-item">
+                    <i class="fas fa-database"></i>
+                    <span id="stats-total">0</span> memories
+                </span>
+                <span class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <span id="stats-fav">0</span> favorites
+                </span>
+                <span class="stat-item">
+                    <i class="fas fa-tags"></i>
+                    <span id="stats-tags">0</span> tags
+                </span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Quick Actions -->
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" id="add-memory-btn">
+                            <i class="fas fa-plus-circle"></i>
+                            New Memory
+                        </button>
+                        <button class="action-btn" id="voice-input-btn">
+                            <i class="fas fa-microphone"></i>
+                            Voice Input
+                        </button>
+                        <button class="action-btn" id="analyze-btn">
+                            <i class="fas fa-chart-line"></i>
+                            Analyze
+                        </button>
+                        <button class="action-btn" id="import-btn">
+                            <i class="fas fa-file-import"></i>
+                            Import
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Export Options -->
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-download"></i> Export</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" id="export-json">
+                            <i class="fas fa-code"></i>
+                            JSON
+                        </button>
+                        <button class="action-btn" id="export-txt">
+                            <i class="fas fa-file-alt"></i>
+                            Text
+                        </button>
+                        <button class="action-btn" id="export-csv">
+                            <i class="fas fa-table"></i>
+                            CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tags Cloud -->
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-cloud"></i> Tags</h3>
+                    <div class="tags-cloud" id="tags-container">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-cog"></i> Features</h3>
+                    <div class="feature-toggle">
+                        <span><i class="fas fa-microphone-alt"></i> Voice Input</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="voice-toggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="feature-toggle">
+                        <span><i class="fas fa-chart-pie"></i> Analysis</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="analysis-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Memory Wall -->
+            <main class="memory-wall">
+                <!-- Search Bar -->
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search memories...">
+                    <button id="search-btn"><i class="fas fa-search"></i> Search</button>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="favorites">Favorites</button>
+                    <button class="filter-btn" data-filter="recent">Recent</button>
+                </div>
+
+                <!-- Memories Grid -->
+                <div id="memories-grid" class="memories-grid">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ===== MODALS ===== -->
+
+    <!-- Add Memory Modal -->
+    <div class="modal" id="add-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Add Memory</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="add-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Content</label>
+                        <textarea id="add-content" placeholder="What's on your mind?" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tags (comma-separated)</label>
+                        <input type="text" id="add-tags" placeholder="idea, project, personal">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-add">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Memory</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Memory Modal -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Edit Memory</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="edit-form">
+                <div class="modal-body">
+                    <input type="hidden" id="edit-id">
+                    <div class="form-group">
+                        <label>Content</label>
+                        <textarea id="edit-content" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tags (comma-separated)</label>
+                        <input type="text" id="edit-tags">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-edit">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Memory Modal -->
+    <div class="modal" id="view-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-eye"></i> Memory Details</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Content</label>
+                    <div id="view-content" style="padding: 10px; background: var(--light); border-radius: 8px; min-height: 100px;"></div>
+                </div>
+                <div class="form-group">
+                    <label>Tags</label>
+                    <div id="view-tags"></div>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <div id="view-date"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal" id="import-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-import"></i> Import Memories</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="import-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Format</label>
+                        <select id="import-format">
+                            <option value="json">JSON</option>
+                            <option value="txt">Text (with #tags)</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>File</label>
+                        <input type="file" id="import-file" accept=".json,.txt,.csv">
+                    </div>
+                    <div id="import-preview" style="padding: 10px; background: var(--light); border-radius: 8px; min-height: 50px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-import">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Analysis Modal -->
+    <div class="modal" id="analyze-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-chart-line"></i> Memory Analysis</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Topic to analyze</label>
+                    <input type="text" id="analyze-topic" placeholder="e.g., happiness, work, learning">
+                </div>
+                <div class="form-group">
+                    <label>Days to look back</label>
+                    <input type="number" id="analyze-days" value="365">
+                </div>
+                <button class="btn btn-primary" id="run-analysis" style="width: 100%; margin-bottom: 20px;">
+                    <i class="fas fa-search"></i> Analyze
+                </button>
+                <div id="analysis-result" style="padding: 15px; background: var(--light); border-radius: 8px; max-height: 300px; overflow-y: auto;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="close-analyze">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        /**
+         * ECHO MEMORY WEB APP - COMPLETE JAVASCRIPT
+         * All functionality in one file
+         */
+
+        // ============================================================================
+        // ECHO MEMORY CLASS
+        // ============================================================================
+
+        class EchoMemory {
+            constructor() {
+                this.memories = [];
+                this.config = {
+                    ENABLE_VOICE: false,
+                    ENABLE_ANALYSIS: true,
+                    USER_ID: this.generateUserId()
+                };
+                this.load();
+            }
+
+            // ------------------------------------------------------------------------
+            // Core Storage
+            // ------------------------------------------------------------------------
+
+            load() {
+                // Load memories
+                const saved = localStorage.getItem('echo_memories');
+                if (saved) {
+                    try {
+                        this.memories = JSON.parse(saved);
+                    } catch (e) {
+                        this.memories = [];
+                    }
+                } else {
+                    // Add welcome memory
+                    this.add(
+                        "Welcome to Echo Memory Web App! This is your first memory.\n\nYou can add memories, tag them with #hashtags, and search through them. Try clicking the 'New Memory' button to add your own thoughts!",
+                        ["welcome", "echo"],
+                        "system"
+                    );
+                    
+                    // Add sample memories
+                    this.add(
+                        "The idea of hybrid consciousness — my mind + AI intelligence — feels like home. #philosophy #future",
+                        ["philosophy", "future"],
+                        "sample"
+                    );
+                    
+                    this.add(
+                        "Built a memory system today that persists across sessions. All data stored in browser. #coding #project",
+                        ["coding", "project"],
+                        "sample"
+                    );
+                }
+
+                // Load config
+                const config = localStorage.getItem('echo_config');
+                if (config) {
+                    try {
+                        this.config = { ...this.config, ...JSON.parse(config) };
+                    } catch (e) {}
+                }
+                this.saveConfig();
+            }
+
+            save() {
+                localStorage.setItem('echo_memories', JSON.stringify(this.memories, null, 2));
+                // Dispatch event for UI update
+                window.dispatchEvent(new CustomEvent('memories-updated'));
+            }
+
+            saveConfig() {
+                localStorage.setItem('echo_config', JSON.stringify(this.config));
+            }
+
+            generateUserId() {
+                return 'user-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            }
+
+            // ------------------------------------------------------------------------
+            // CRUD Operations
+            // ------------------------------------------------------------------------
+
+            add(content, tags = [], source = "manual") {
+                // Auto-extract hashtags
+                if (!tags || tags.length === 0) {
+                    const hashtags = content.match(/#[a-zA-Z0-9_]+/g);
+                    if (hashtags) {
+                        tags = hashtags.map(t => t.substring(1));
+                        // Remove hashtags from content
+                        content = content.replace(/#[a-zA-Z0-9_]+/g, '').trim();
+                    }
+                }
+
+                const memory = {
+                    id: this.memories.length + 1,
+                    content: content,
+                    tags: tags || [],
+                    timestamp: new Date().toISOString(),
+                    favorite: false,
+                    source: source
+                };
+                this.memories.push(memory);
+                this.save();
+                return memory;
+            }
+
+            getAll() {
+                return this.memories;
+            }
+
+            getById(id) {
+                return this.memories.find(m => m.id === parseInt(id));
+            }
+
+            getRecent(limit = 10) {
+                return [...this.memories]
+                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                    .slice(0, limit);
+            }
+
+            search({ query = '', tag = '', favoriteOnly = false, dateFrom = null, dateTo = null } = {}) {
+                return this.memories.filter(m => {
+                    if (favoriteOnly && !m.favorite) return false;
+                    if (tag && !m.tags.includes(tag)) return false;
+                    if (query && !m.content.toLowerCase().includes(query.toLowerCase())) return false;
+                    if (dateFrom && m.timestamp.slice(0, 10) < dateFrom) return false;
+                    if (dateTo && m.timestamp.slice(0, 10) > dateTo) return false;
+                    return true;
+                });
+            }
+
+            update(id, updates) {
+                const index = this.memories.findIndex(m => m.id === parseInt(id));
+                if (index !== -1) {
+                    this.memories[index] = { 
+                        ...this.memories[index], 
+                        ...updates,
+                        editedAt: new Date().toISOString()
+                    };
+                    this.save();
+                    return this.memories[index];
+                }
+                return null;
+            }
+
+            delete(id) {
+                const index = this.memories.findIndex(m => m.id === parseInt(id));
+                if (index !== -1) {
+                    this.memories.splice(index, 1);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            toggleFavorite(id) {
+                const memory = this.getById(id);
+                if (memory) {
+                    memory.favorite = !memory.favorite;
+                    this.save();
+                    return memory;
+                }
+                return null;
+            }
+
+            // ------------------------------------------------------------------------
+            // Statistics & Analysis
+            // ------------------------------------------------------------------------
+
+            getStats() {
+                const total = this.memories.length;
+                if (total === 0) {
+                    return { total: 0, tags: {}, favorites: 0, byMonth: {} };
+                }
+
+                const tagCount = {};
+                let favCount = 0;
+                const byMonth = {};
+
+                this.memories.forEach(m => {
+                    m.tags.forEach(t => {
+                        tagCount[t] = (tagCount[t] || 0) + 1;
+                    });
+                    if (m.favorite) favCount++;
+                    
+                    const month = m.timestamp.slice(0, 7);
+                    byMonth[month] = (byMonth[month] || 0) + 1;
+                });
+
+                return {
+                    total,
+                    tags: tagCount,
+                    favorites: favCount,
+                    byMonth
+                };
+            }
+
+            getAllTags() {
+                const tags = {};
+                this.memories.forEach(m => {
+                    m.tags.forEach(t => {
+                        tags[t] = (tags[t] || 0) + 1;
+                    });
+                });
+                return tags;
+            }
+
+            analyzeTopic(topic, days = 365) {
+                const cutoff = new Date();
+                cutoff.setDate(cutoff.getDate() - days);
+                
+                const memories = this.memories.filter(m => {
+                    return m.content.toLowerCase().includes(topic.toLowerCase()) &&
+                           new Date(m.timestamp) >= cutoff;
+                });
+
+                if (memories.length === 0) {
+                    return `No memories about "${topic}" in the last ${days} days.`;
+                }
+
+                // Group by month
+                const byMonth = {};
+                memories.forEach(m => {
+                    const month = m.timestamp.slice(0, 7);
+                    if (!byMonth[month]) byMonth[month] = [];
+                    byMonth[month].push(m);
+                });
+
+                let summary = `📊 Thoughts on "${topic}" over ${days} days:\n\n`;
+                
+                Object.keys(byMonth).sort().forEach(month => {
+                    const monthMems = byMonth[month];
+                    summary += `**${month}** (${monthMems.length} memories)\n`;
+                    
+                    // Extract key points (simplified)
+                    monthMems.slice(0, 2).forEach(m => {
+                        const preview = m.content.length > 50 ? 
+                            m.content.substring(0, 50) + '...' : m.content;
+                        summary += `• ${preview}\n`;
+                    });
+                    summary += '\n';
+                });
+
+                return summary;
+            }
+
+            // ------------------------------------------------------------------------
+            // Export/Import
+            // ------------------------------------------------------------------------
+
+            exportData(format = 'json') {
+                const data = {
+                    memories: this.memories,
+                    config: this.config,
+                    exportDate: new Date().toISOString(),
+                    version: '3.0'
+                };
+
+                switch(format) {
+                    case 'json':
+                        return JSON.stringify(data, null, 2);
+                    
+                    case 'txt':
+                        return this.memories.map(m => {
+                            let text = m.content;
+                            if (m.tags.length) {
+                                text += '\n' + m.tags.map(t => '#' + t).join(' ');
+                            }
+                            text += `\n[${m.timestamp.slice(0, 10)}]${m.favorite ? ' ⭐' : ''}`;
+                            return text;
+                        }).join('\n\n---\n\n');
+                    
+                    case 'csv':
+                        const headers = ['id', 'content', 'tags', 'date', 'favorite'];
+                        const rows = this.memories.map(m => [
+                            m.id,
+                            m.content.replace(/,/g, ';'),
+                            m.tags.join(';'),
+                            m.timestamp.slice(0, 10),
+                            m.favorite ? 'yes' : 'no'
+                        ]);
+                        return [headers, ...rows].map(row => row.join(',')).join('\n');
+                    
+                    default:
+                        return JSON.stringify(data, null, 2);
+                }
+            }
+
+            importData(data, format = 'json') {
+                try {
+                    let imported = [];
+                    
+                    if (format === 'json') {
+                        const parsed = JSON.parse(data);
+                        imported = parsed.memories || parsed;
+                    } else if (format === 'txt') {
+                        // Simple TXT import
+                        const chunks = data.split('---');
+                        chunks.forEach(chunk => {
+                            const lines = chunk.trim().split('\n');
+                            if (lines.length) {
+                                const content = lines[0];
+                                const tags = [];
+                                lines.forEach(line => {
+                                    const hashtags = line.match(/#[a-zA-Z0-9_]+/g);
+                                    if (hashtags) {
+                                        tags.push(...hashtags.map(t => t.substring(1)));
+                                    }
+                                });
+                                if (content) {
+                                    this.add(content, tags, 'import');
+                                }
+                            }
+                        });
+                        return chunks.length;
+                    } else if (format === 'csv') {
+                        const lines = data.split('\n');
+                        const headers = lines[0].split(',');
+                        for (let i = 1; i < lines.length; i++) {
+                            if (!lines[i].trim()) continue;
+                            const values = lines[i].split(',');
+                            const content = values[1] || '';
+                            const tags = values[2] ? values[2].split(';') : [];
+                            if (content) {
+                                this.add(content, tags, 'import');
+                            }
+                        }
+                        return lines.length - 1;
+                    }
+                    
+                    if (Array.isArray(imported)) {
+                        imported.forEach(item => {
+                            this.add(
+                                item.content || item.text || '',
+                                item.tags || [],
+                                'import'
+                            );
+                        });
+                        return imported.length;
+                    }
+                } catch (e) {
+                    console.error('Import failed:', e);
+                    throw e;
+                }
+                return 0;
+            }
+
+            // ------------------------------------------------------------------------
+            // Voice Integration (Web Speech API)
+            // ------------------------------------------------------------------------
+
+            initVoice() {
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                    return false;
+                }
+                
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                this.recognition = new SpeechRecognition();
+                this.recognition.continuous = true;
+                this.recognition.interimResults = true;
+                this.recognition.lang = 'en-US';
+                
+                this.synthesis = window.speechSynthesis;
+                this.isListening = false;
+                
+                return true;
+            }
+
+            startVoiceListening(onResult, onEnd) {
+                if (!this.recognition) return false;
+                
+                this.recognition.onresult = (event) => {
+                    const transcript = Array.from(event.results)
+                        .map(result => result[0].transcript)
+                        .join('');
+                    
+                    if (event.results[0].isFinal) {
+                        if (onResult) onResult(transcript);
+                    }
+                };
+
+                this.recognition.onend = () => {
+                    this.isListening = false;
+                    if (onEnd) onEnd();
+                };
+
+                this.recognition.start();
+                this.isListening = true;
+                return true;
+            }
+
+            stopVoiceListening() {
+                if (this.recognition && this.isListening) {
+                    this.recognition.stop();
+                    this.isListening = false;
+                }
+            }
+
+            speak(text) {
+                if (!this.synthesis) return;
+                const utterance = new SpeechSynthesisUtterance(text);
+                this.synthesis.speak(utterance);
+            }
+        }
+
+        // ============================================================================
+        // UI CONTROLLER
+        // ============================================================================
+
+        class EchoUI {
+            constructor() {
+                this.echo = new EchoMemory();
+                this.currentFilter = 'all';
+                this.currentTag = null;
+                this.init();
+            }
+
+            init() {
+                this.cacheElements();
+                this.attachEvents();
+                this.renderMemories();
+                this.updateStats();
+                this.renderTags();
+                this.checkFeatures();
+            }
+
+            cacheElements() {
+                this.memoriesGrid = document.getElementById('memories-grid');
+                this.statsTotal = document.getElementById('stats-total');
+                this.statsFav = document.getElementById('stats-fav');
+                this.statsTags = document.getElementById('stats-tags');
+                this.searchInput = document.getElementById('search-input');
+                this.searchBtn = document.getElementById('search-btn');
+                this.filterBtns = document.querySelectorAll('.filter-btn');
+                this.tagsContainer = document.getElementById('tags-container');
+                
+                // Modals
+                this.addModal = document.getElementById('add-modal');
+                this.editModal = document.getElementById('edit-modal');
+                this.viewModal = document.getElementById('view-modal');
+                this.importModal = document.getElementById('import-modal');
+                this.analyzeModal = document.getElementById('analyze-modal');
+                
+                // Forms
+                this.addForm = document.getElementById('add-form');
+                this.editForm = document.getElementById('edit-form');
+                this.importForm = document.getElementById('import-form');
+                
+                // Feature toggles
+                this.voiceToggle = document.getElementById('voice-toggle');
+                this.analysisToggle = document.getElementById('analysis-toggle');
+            }
+
+            attachEvents() {
+                // Search
+                this.searchBtn.addEventListener('click', () => this.search());
+                this.searchInput.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') this.search();
+                });
+
+                // Filter buttons
+                this.filterBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.filterBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.currentFilter = btn.dataset.filter;
+                        this.renderMemories();
+                    });
+                });
+
+                // Add memory
+                document.getElementById('add-memory-btn').addEventListener('click', () => {
+                    this.openModal('add');
+                });
+
+                document.getElementById('cancel-add').addEventListener('click', () => {
+                    this.closeModal('add');
+                });
+
+                this.addForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleAddMemory();
+                });
+
+                // Edit memory
+                document.getElementById('cancel-edit').addEventListener('click', () => {
+                    this.closeModal('edit');
+                });
+
+                this.editForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleEditMemory();
+                });
+
+                // Import
+                document.getElementById('import-btn').addEventListener('click', () => {
+                    this.openModal('import');
+                });
+
+                document.getElementById('cancel-import').addEventListener('click', () => {
+                    this.closeModal('import');
+                });
+
+                this.importForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleImport();
+                });
+
+                document.getElementById('import-file').addEventListener('change', (e) => {
+                    this.handleFileSelect(e.target.files[0]);
+                });
+
+                // Export
+                document.getElementById('export-json').addEventListener('click', () => {
+                    this.exportData('json');
+                });
+                document.getElementById('export-txt').addEventListener('click', () => {
+                    this.exportData('txt');
+                });
+                document.getElementById('export-csv').addEventListener('click', () => {
+                    this.exportData('csv');
+                });
+
+                // Analysis
+                document.getElementById('analyze-btn').addEventListener('click', () => {
+                    this.openModal('analyze');
+                });
+
+                document.getElementById('run-analysis').addEventListener('click', () => {
+                    this.runAnalysis();
+                });
+
+                document.getElementById('close-analyze').addEventListener('click', () => {
+                    this.closeModal('analyze');
+                });
+
+                // Voice
+                this.voiceToggle.addEventListener('change', (e) => {
+                    this.echo.config.ENABLE_VOICE = e.target.checked;
+                    this.echo.saveConfig();
+                    if (e.target.checked) {
+                        this.initVoice();
+                    }
+                });
+
+                this.analysisToggle.addEventListener('change', (e) => {
+                    this.echo.config.ENABLE_ANALYSIS = e.target.checked;
+                    this.echo.saveConfig();
+                });
+
+                document.getElementById('voice-input-btn').addEventListener('click', () => {
+                    this.toggleVoiceInput();
+                });
+
+                // Close modals
+                document.querySelectorAll('.close-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const modal = e.target.closest('.modal');
+                        if (modal) modal.classList.remove('active');
+                    });
+                });
+
+                // Click outside to close
+                window.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('modal')) {
+                        e.target.classList.remove('active');
+                    }
+                });
+
+                // Listen for memory updates
+                window.addEventListener('memories-updated', () => {
+                    this.renderMemories();
+                    this.updateStats();
+                    this.renderTags();
+                });
+            }
+
+            // ------------------------------------------------------------------------
+            // Memory Rendering
+            // ------------------------------------------------------------------------
+
+            renderMemories() {
+                let memories = this.echo.getAll();
+                
+                // Apply filters
+                if (this.currentFilter === 'favorites') {
+                    memories = memories.filter(m => m.favorite);
+                } else if (this.currentFilter === 'recent') {
+                    memories = this.echo.getRecent(20);
+                }
+                
+                if (this.currentTag) {
+                    memories = memories.filter(m => m.tags.includes(this.currentTag));
+                }
+
+                if (memories.length === 0) {
+                    this.memoriesGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-brain"></i>
+                            <h3>No memories found</h3>
+                            <p>Add your first memory to get started!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                this.memoriesGrid.innerHTML = memories
+                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                    .map(m => this.renderMemoryCard(m))
+                    .join('');
+            }
+
+            renderMemoryCard(memory) {
+                const date = new Date(memory.timestamp).toLocaleDateString();
+                const preview = memory.content.length > 100 ? 
+                    memory.content.substring(0, 100) + '...' : memory.content;
+                
+                return `
+                    <div class="memory-card ${memory.favorite ? 'favorite' : ''}" data-id="${memory.id}">
+                        <div class="memory-header">
+                            <span class="memory-id">#${memory.id}</span>
+                            <span class="memory-favorite" onclick="ui.toggleFavorite(${memory.id})">
+                                ${memory.favorite ? '⭐' : '☆'}
+                            </span>
+                        </div>
+                        <div class="memory-content" onclick="ui.viewMemory(${memory.id})">
+                            ${preview.replace(/\n/g, '<br>')}
+                        </div>
+                        <div class="memory-tags">
+                            ${memory.tags.map(t => `<span class="memory-tag" onclick="ui.filterByTag('${t}')">#${t}</span>`).join('')}
+                        </div>
+                        <div class="memory-footer">
+                            <span>${date}</span>
+                            <div class="memory-actions">
+                                <button class="memory-action-btn" onclick="ui.editMemory(${memory.id})" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="memory-action-btn delete" onclick="ui.deleteMemory(${memory.id})" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderTags() {
+                const tags = this.echo.getAllTags();
+                const sorted = Object.entries(tags).sort((a, b) => b[1] - a[1]);
+                
+                this.tagsContainer.innerHTML = sorted.map(([tag, count]) => `
+                    <span class="tag ${this.currentTag === tag ? 'active' : ''}" onclick="ui.filterByTag('${tag}')">
+                        #${tag} <span class="count">${count}</span>
+                    </span>
+                `).join('');
+            }
+
+            updateStats() {
+                const stats = this.echo.getStats();
+                this.statsTotal.textContent = stats.total;
+                this.statsFav.textContent = stats.favorites;
+                this.statsTags.textContent = Object.keys(stats.tags).length;
+            }
+
+            // ------------------------------------------------------------------------
+            // Actions
+            // ------------------------------------------------------------------------
+
+            search() {
+                const query = this.searchInput.value;
+                if (query) {
+                    const results = this.echo.search({ query });
+                    this.renderSearchResults(results);
+                } else {
+                    this.renderMemories();
+                }
+            }
+
+            renderSearchResults(results) {
+                if (results.length === 0) {
+                    this.memoriesGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <h3>No results found</h3>
+                            <p>Try different keywords</p>
+                        </div>
+                    `;
+                } else {
+                    this.memoriesGrid.innerHTML = results
+                        .map(m => this.renderMemoryCard(m))
+                        .join('');
+                }
+            }
+
+            filterByTag(tag) {
+                this.currentTag = this.currentTag === tag ? null : tag;
+                this.renderTags();
+                this.renderMemories();
+            }
+
+            viewMemory(id) {
+                const memory = this.echo.getById(id);
+                if (!memory) return;
+
+                document.getElementById('view-content').innerHTML = memory.content.replace(/\n/g, '<br>');
+                document.getElementById('view-tags').innerHTML = memory.tags.map(t => 
+                    `<span class="memory-tag">#${t}</span>`
+                ).join('');
+                document.getElementById('view-date').textContent = new Date(memory.timestamp).toLocaleString();
+                
+                this.openModal('view');
+            }
+
+            editMemory(id) {
+                const memory = this.echo.getById(id);
+                if (!memory) return;
+
+                document.getElementById('edit-id').value = memory.id;
+                document.getElementById('edit-content').value = memory.content;
+                document.getElementById('edit-tags').value = memory.tags.join(', ');
+                
+                this.openModal('edit');
+            }
+
+            handleEditMemory() {
+                const id = document.getElementById('edit-id').value;
+                const content = document.getElementById('edit-content').value;
+                const tags = document.getElementById('edit-tags').value
+                    .split(',')
+                    .map(t => t.trim())
+                    .filter(t => t);
+
+                this.echo.update(id, { content, tags });
+                this.closeModal('edit');
+                this.showToast('Memory updated successfully', 'success');
+            }
+
+            deleteMemory(id) {
+                if (confirm('Are you sure you want to delete this memory?')) {
+                    this.echo.delete(id);
+                    this.showToast('Memory deleted', 'warning');
+                }
+            }
+
+            toggleFavorite(id) {
+                this.echo.toggleFavorite(id);
+            }
+
+            handleAddMemory() {
+                const content = document.getElementById('add-content').value;
+                const tags = document.getElementById('add-tags').value
+                    .split(',')
+                    .map(t => t.trim())
+                    .filter(t => t);
+
+                if (content) {
+                    this.echo.add(content, tags);
+                    this.addForm.reset();
+                    this.closeModal('add');
+                    this.showToast('Memory added successfully', 'success');
+                }
+            }
+
+            // ------------------------------------------------------------------------
+            // Voice
+            // ------------------------------------------------------------------------
+
+            initVoice() {
+                if (!this.echo.initVoice()) {
+                    this.showToast('Voice input not supported in this browser', 'error');
+                    this.voiceToggle.checked = false;
+                    return false;
+                }
+                return true;
+            }
+
+            toggleVoiceInput() {
+                if (!this.echo.config.ENABLE_VOICE) {
+                    this.showToast('Enable voice in settings first', 'warning');
+                    return;
+                }
+
+                if (!this.echo.recognition) {
+                    if (!this.initVoice()) return;
+                }
+
+                const btn = document.getElementById('voice-input-btn');
+                
+                if (this.echo.isListening) {
+                    this.echo.stopVoiceListening();
+                    btn.classList.remove('voice-active');
+                    btn.innerHTML = '<i class="fas fa-microphone"></i> Voice';
+                } else {
+                    this.echo.startVoiceListening(
+                        (text) => {
+                            document.getElementById('add-content').value = text;
+                            this.echo.stopVoiceListening();
+                            btn.classList.remove('voice-active');
+                            btn.innerHTML = '<i class="fas fa-microphone"></i> Voice';
+                            this.openModal('add');
+                        },
+                        () => {
+                            btn.classList.remove('voice-active');
+                            btn.innerHTML = '<i class="fas fa-microphone"></i> Voice';
+                        }
+                    );
+                    btn.classList.add('voice-active');
+                    btn.innerHTML = '<i class="fas fa-stop"></i> Stop';
+                }
+            }
+
+            // ------------------------------------------------------------------------
+            // Export/Import
+            // ------------------------------------------------------------------------
+
+            exportData(format) {
+                const data = this.echo.exportData(format);
+                const blob = new Blob([data], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `echo_export_${new Date().toISOString().slice(0, 10)}.${format}`;
+                a.click();
+                URL.revokeObjectURL(url);
+                this.showToast(`Exported as ${format.toUpperCase()}`, 'success');
+            }
+
+            handleFileSelect(file) {
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.importData = e.target.result;
+                    document.getElementById('import-preview').textContent = 
+                        `File loaded: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                };
+                reader.readAsText(file);
+            }
+
+            handleImport() {
+                const format = document.getElementById('import-format').value;
+                
+                try {
+                    const count = this.echo.importData(this.importData, format);
+                    this.closeModal('import');
+                    this.showToast(`Imported ${count} memories successfully`, 'success');
+                } catch (e) {
+                    this.showToast('Import failed: ' + e.message, 'error');
+                }
+            }
+
+            // ------------------------------------------------------------------------
+            // Analysis
+            // ------------------------------------------------------------------------
+
+            runAnalysis() {
+                const topic = document.getElementById('analyze-topic').value;
+                const days = parseInt(document.getElementById('analyze-days').value) || 365;
+                
+                if (!topic) {
+                    this.showToast('Enter a topic to analyze', 'warning');
+                    return;
+                }
+
+                const result = this.echo.analyzeTopic(topic, days);
+                document.getElementById('analysis-result').innerHTML = result.replace(/\n/g, '<br>');
+            }
+
+            // ------------------------------------------------------------------------
+            // UI Helpers
+            // ------------------------------------------------------------------------
+
+            openModal(name) {
+                const modal = document.getElementById(`${name}-modal`);
+                if (modal) modal.classList.add('active');
+            }
+
+            closeModal(name) {
+                const modal = document.getElementById(`${name}-modal`);
+                if (modal) modal.classList.remove('active');
+            }
+
+            showToast(message, type = 'info') {
+                const container = document.getElementById('toast-container');
+                const id = 'toast-' + Date.now();
+                
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.id = id;
+                
+                const icons = {
+                    success: '✅',
+                    error: '❌',
+                    warning: '⚠️',
+                    info: 'ℹ️'
+                };
+                
+                toast.innerHTML = `
+                    <div class="toast-icon">${icons[type]}</div>
+                    <div class="toast-content">
+                        <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close" onclick="document.getElementById('${id}').remove()">×</button>
+                `;
+                
+                container.appendChild(toast);
+                
+                setTimeout(() => {
+                    const element = document.getElementById(id);
+                    if (element) element.remove();
+                }, 5000);
+            }
+
+            checkFeatures() {
+                // Set toggle states from config
+                this.voiceToggle.checked = this.echo.config.ENABLE_VOICE;
+                this.analysisToggle.checked = this.echo.config.ENABLE_ANALYSIS;
+                
+                // Check for voice support
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                    this.voiceToggle.disabled = true;
+                    document.querySelector('[for="voice-toggle"]').textContent += ' (not supported)';
+                }
+            }
+        }
+
+        // ============================================================================
+        // Initialize App
+        // ============================================================================
+
+        let ui;
+        document.addEventListener('DOMContentLoaded', () => {
+            ui = new EchoUI();
+            window.ui = ui; // For onclick handlers
+        });
+    </script>
+</body>
+</html>
