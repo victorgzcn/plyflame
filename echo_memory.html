@@ -1010,12 +1010,14 @@
     <!-- ===== JAVASCRIPT ===== -->
     <script>
         /**
-         * ECHO MEMORY WEB APP - COMPLETE JAVASCRIPT
-         * All functionality in one file
+         * ECHO MEMORY WEB APP - FIXED VERSION
+         * Problems fixed:
+         * 1. Analysis now shows meaningful results even with few memories
+         * 2. Voice input permission handling improved
          */
 
         // ============================================================================
-        // ECHO MEMORY CLASS
+        // ECHO MEMORY CLASS - IMPROVED
         // ============================================================================
 
         class EchoMemory {
@@ -1026,6 +1028,10 @@
                     ENABLE_ANALYSIS: true,
                     USER_ID: this.generateUserId()
                 };
+                this.recognition = null;
+                this.synthesis = window.speechSynthesis;
+                this.isListening = false;
+                this.microphonePermission = false;
                 this.load();
             }
 
@@ -1034,7 +1040,6 @@
             // ------------------------------------------------------------------------
 
             load() {
-                // Load memories
                 const saved = localStorage.getItem('echo_memories');
                 if (saved) {
                     try {
@@ -1043,28 +1048,38 @@
                         this.memories = [];
                     }
                 } else {
-                    // Add welcome memory
+                    // Add more meaningful sample memories for analysis to work
                     this.add(
-                        "Welcome to Echo Memory Web App! This is your first memory.\n\nYou can add memories, tag them with #hashtags, and search through them. Try clicking the 'New Memory' button to add your own thoughts!",
-                        ["welcome", "echo"],
-                        "system"
-                    );
-                    
-                    // Add sample memories
-                    this.add(
-                        "The idea of hybrid consciousness — my mind + AI intelligence — feels like home. #philosophy #future",
-                        ["philosophy", "future"],
+                        "Had so much fun at the park today! Playing with friends and laughing all afternoon. #fun #friends #happy",
+                        ["fun", "friends", "happy"],
                         "sample"
                     );
                     
                     this.add(
-                        "Built a memory system today that persists across sessions. All data stored in browser. #coding #project",
-                        ["coding", "project"],
+                        "Movie night was a blast! Watched a comedy and couldn't stop laughing. Definitely a fun evening. #fun #movies #entertainment",
+                        ["fun", "movies", "entertainment"],
+                        "sample"
+                    );
+                    
+                    this.add(
+                        "Game night with family - so much fun! We played board games and ate pizza. Best weekend ever. #fun #family #games",
+                        ["fun", "family", "games"],
+                        "sample"
+                    );
+                    
+                    this.add(
+                        "Learning to code is actually fun when things finally work! Built my first app today. #coding #learning #achievement",
+                        ["coding", "learning", "achievement"],
+                        "sample"
+                    );
+                    
+                    this.add(
+                        "Work project completed successfully. The team worked really well together. Productive day! #work #team #productivity",
+                        ["work", "team", "productivity"],
                         "sample"
                     );
                 }
 
-                // Load config
                 const config = localStorage.getItem('echo_config');
                 if (config) {
                     try {
@@ -1076,7 +1091,6 @@
 
             save() {
                 localStorage.setItem('echo_memories', JSON.stringify(this.memories, null, 2));
-                // Dispatch event for UI update
                 window.dispatchEvent(new CustomEvent('memories-updated'));
             }
 
@@ -1098,7 +1112,6 @@
                     const hashtags = content.match(/#[a-zA-Z0-9_]+/g);
                     if (hashtags) {
                         tags = hashtags.map(t => t.substring(1));
-                        // Remove hashtags from content
                         content = content.replace(/#[a-zA-Z0-9_]+/g, '').trim();
                     }
                 }
@@ -1176,7 +1189,7 @@
             }
 
             // ------------------------------------------------------------------------
-            // Statistics & Analysis
+            // IMPROVED ANALYSIS - Now works even with few memories
             // ------------------------------------------------------------------------
 
             getStats() {
@@ -1217,43 +1230,295 @@
                 return tags;
             }
 
+            // IMPROVED: Much smarter analysis that works with limited data
             analyzeTopic(topic, days = 365) {
                 const cutoff = new Date();
                 cutoff.setDate(cutoff.getDate() - days);
                 
-                const memories = this.memories.filter(m => {
+                // 1. Search in content
+                const contentMatches = this.memories.filter(m => {
                     return m.content.toLowerCase().includes(topic.toLowerCase()) &&
                            new Date(m.timestamp) >= cutoff;
                 });
 
-                if (memories.length === 0) {
-                    return `No memories about "${topic}" in the last ${days} days.`;
+                // 2. Search in tags
+                const tagMatches = this.memories.filter(m => {
+                    return m.tags.some(t => t.toLowerCase().includes(topic.toLowerCase())) &&
+                           new Date(m.timestamp) >= cutoff;
+                });
+
+                // Combine and deduplicate
+                const allMatches = [...new Map([...contentMatches, ...tagMatches].map(m => [m.id, m])).values()];
+
+                if (allMatches.length === 0) {
+                    // IMPROVED: Show related topics instead of just "no results"
+                    const allTags = this.getAllTags();
+                    const relatedTopics = Object.keys(allTags).slice(0, 5);
+                    
+                    let suggestion = `No direct memories about "${topic}" found. `;
+                    
+                    if (relatedTopics.length > 0) {
+                        suggestion += `\n\n📌 **Try these topics instead:**\n`;
+                        relatedTopics.forEach(t => {
+                            suggestion += `• #${t} (${allTags[t]} memories)\n`;
+                        });
+                    }
+                    
+                    // Show recent memories as examples
+                    const recent = this.getRecent(3);
+                    if (recent.length > 0) {
+                        suggestion += `\n📝 **Recent memories to explore:**\n`;
+                        recent.forEach(m => {
+                            const preview = m.content.length > 50 ? m.content.substring(0, 50) + '...' : m.content;
+                            suggestion += `• ${preview}\n`;
+                        });
+                    }
+                    
+                    return suggestion;
                 }
 
-                // Group by month
+                // Group by month for timeline
                 const byMonth = {};
-                memories.forEach(m => {
+                allMatches.forEach(m => {
                     const month = m.timestamp.slice(0, 7);
                     if (!byMonth[month]) byMonth[month] = [];
                     byMonth[month].push(m);
                 });
 
-                let summary = `📊 Thoughts on "${topic}" over ${days} days:\n\n`;
+                let summary = `📊 **Analysis of "${topic}"** (${allMatches.length} memories found)\n\n`;
                 
+                // Overall statistics
+                const relatedTags = new Set();
+                allMatches.forEach(m => m.tags.forEach(t => relatedTags.add(t)));
+                
+                summary += `**Related tags:** ${Array.from(relatedTags).map(t => `#${t}`).join(', ')}\n\n`;
+                
+                // Timeline
+                summary += `**Timeline:**\n`;
                 Object.keys(byMonth).sort().forEach(month => {
-                    const monthMems = byMonth[month];
-                    summary += `**${month}** (${monthMems.length} memories)\n`;
+                    summary += `• ${month}: ${byMonth[month].length} memories\n`;
+                });
+                
+                // Key insights (if enough data)
+                if (allMatches.length >= 3) {
+                    summary += `\n**Key insights:**\n`;
                     
-                    // Extract key points (simplified)
-                    monthMems.slice(0, 2).forEach(m => {
-                        const preview = m.content.length > 50 ? 
-                            m.content.substring(0, 50) + '...' : m.content;
-                        summary += `• ${preview}\n`;
+                    // Find most common words
+                    const words = {};
+                    allMatches.forEach(m => {
+                        m.content.toLowerCase().split(/\s+/).forEach(w => {
+                            if (w.length > 3 && !['this', 'that', 'with', 'from', 'have'].includes(w)) {
+                                words[w] = (words[w] || 0) + 1;
+                            }
+                        });
                     });
-                    summary += '\n';
+                    
+                    const topWords = Object.entries(words)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 3);
+                    
+                    if (topWords.length > 0) {
+                        summary += `• Common themes: ${topWords.map(([w, c]) => `"${w}" (${c}x)`).join(', ')}\n`;
+                    }
+                    
+                    // Sentiment (simplified)
+                    const happyWords = ['happy', 'fun', 'great', 'awesome', 'love', 'good', 'wonderful'];
+                    let happyCount = 0;
+                    allMatches.forEach(m => {
+                        happyWords.forEach(word => {
+                            if (m.content.toLowerCase().includes(word)) happyCount++;
+                        });
+                    });
+                    
+                    const sentiment = (happyCount / allMatches.length) * 100;
+                    summary += `• Positive sentiment: ${Math.round(sentiment)}%\n`;
+                }
+                
+                // Recent examples
+                summary += `\n**Recent examples:**\n`;
+                allMatches.slice(0, 3).forEach(m => {
+                    const date = new Date(m.timestamp).toLocaleDateString();
+                    const preview = m.content.length > 60 ? m.content.substring(0, 60) + '...' : m.content;
+                    summary += `• [${date}] ${preview}\n`;
                 });
 
                 return summary;
+            }
+
+            // ------------------------------------------------------------------------
+            // IMPROVED VOICE - Better permission handling
+            // ------------------------------------------------------------------------
+
+            async initVoice() {
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                    return { success: false, error: 'not_supported' };
+                }
+                
+                // First check if we already have permission
+                try {
+                    // Modern way to check microphone permission
+                    if (navigator.permissions && navigator.permissions.query) {
+                        const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+                        this.microphonePermission = permissionStatus.state === 'granted';
+                        
+                        // Listen for permission changes
+                        permissionStatus.onchange = () => {
+                            this.microphonePermission = permissionStatus.state === 'granted';
+                            if (this.microphonePermission && !this.recognition) {
+                                this.setupRecognition();
+                            }
+                        };
+                    }
+                } catch (e) {
+                    // Permissions API not supported, we'll test by trying to use microphone
+                    console.log('Permissions API not supported, will test directly');
+                }
+                
+                return this.setupRecognition();
+            }
+
+            setupRecognition() {
+                try {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    this.recognition.continuous = false; // Changed to false for better UX
+                    this.recognition.interimResults = true;
+                    this.recognition.lang = 'en-US';
+                    this.recognition.maxAlternatives = 1;
+                    
+                    return { success: true };
+                } catch (e) {
+                    console.error('Speech recognition setup failed:', e);
+                    return { success: false, error: 'setup_failed' };
+                }
+            }
+
+            async requestMicrophonePermission() {
+                try {
+                    // This will trigger the browser's permission prompt
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    
+                    // Stop all tracks immediately (we just wanted permission)
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    this.microphonePermission = true;
+                    
+                    // Setup recognition if not already done
+                    if (!this.recognition) {
+                        this.setupRecognition();
+                    }
+                    
+                    return { success: true };
+                } catch (err) {
+                    console.error('Microphone permission denied:', err);
+                    this.microphonePermission = false;
+                    
+                    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                        return { success: false, error: 'denied' };
+                    } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                        return { success: false, error: 'no_microphone' };
+                    } else {
+                        return { success: false, error: 'unknown' };
+                    }
+                }
+            }
+
+            async startVoiceListening(onResult, onEnd, onError) {
+                // First check if we have permission
+                if (!this.microphonePermission) {
+                    const permResult = await this.requestMicrophonePermission();
+                    if (!permResult.success) {
+                        if (onError) onError(permResult.error);
+                        return false;
+                    }
+                }
+
+                // Setup recognition if needed
+                if (!this.recognition) {
+                    const setupResult = this.setupRecognition();
+                    if (!setupResult.success) {
+                        if (onError) onError(setupResult.error);
+                        return false;
+                    }
+                }
+
+                // Set up event handlers
+                this.recognition.onresult = (event) => {
+                    const transcript = Array.from(event.results)
+                        .map(result => result[0].transcript)
+                        .join('');
+                    
+                    if (event.results[0].isFinal) {
+                        if (onResult) onResult(transcript);
+                    }
+                };
+
+                this.recognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                    this.isListening = false;
+                    
+                    if (event.error === 'not-allowed') {
+                        this.microphonePermission = false;
+                        if (onError) onError('permission_denied');
+                    } else if (event.error === 'no-speech') {
+                        if (onError) onError('no_speech');
+                    } else {
+                        if (onError) onError(event.error);
+                    }
+                    
+                    if (onEnd) onEnd();
+                };
+
+                this.recognition.onend = () => {
+                    this.isListening = false;
+                    if (onEnd) onEnd();
+                };
+
+                try {
+                    this.recognition.start();
+                    this.isListening = true;
+                    return true;
+                } catch (e) {
+                    console.error('Failed to start recognition:', e);
+                    this.isListening = false;
+                    if (onError) onError('start_failed');
+                    return false;
+                }
+            }
+
+            stopVoiceListening() {
+                if (this.recognition && this.isListening) {
+                    try {
+                        this.recognition.stop();
+                    } catch (e) {
+                        console.error('Error stopping recognition:', e);
+                    }
+                    this.isListening = false;
+                }
+            }
+
+            speak(text) {
+                if (!this.synthesis) {
+                    this.synthesis = window.speechSynthesis;
+                }
+                
+                // Cancel any ongoing speech
+                this.synthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Get available voices and try to find a good one
+                const voices = this.synthesis.getVoices();
+                const preferredVoice = voices.find(v => v.lang === 'en-US' && !v.localService) || voices[0];
+                if (preferredVoice) {
+                    utterance.voice = preferredVoice;
+                }
+                
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                
+                this.synthesis.speak(utterance);
             }
 
             // ------------------------------------------------------------------------
@@ -1300,13 +1565,22 @@
 
             importData(data, format = 'json') {
                 try {
-                    let imported = [];
+                    let count = 0;
                     
                     if (format === 'json') {
                         const parsed = JSON.parse(data);
-                        imported = parsed.memories || parsed;
+                        const imported = parsed.memories || parsed;
+                        if (Array.isArray(imported)) {
+                            imported.forEach(item => {
+                                this.add(
+                                    item.content || item.text || '',
+                                    item.tags || [],
+                                    'import'
+                                );
+                                count++;
+                            });
+                        }
                     } else if (format === 'txt') {
-                        // Simple TXT import
                         const chunks = data.split('---');
                         chunks.forEach(chunk => {
                             const lines = chunk.trim().split('\n');
@@ -1321,13 +1595,12 @@
                                 });
                                 if (content) {
                                     this.add(content, tags, 'import');
+                                    count++;
                                 }
                             }
                         });
-                        return chunks.length;
                     } else if (format === 'csv') {
                         const lines = data.split('\n');
-                        const headers = lines[0].split(',');
                         for (let i = 1; i < lines.length; i++) {
                             if (!lines[i].trim()) continue;
                             const values = lines[i].split(',');
@@ -1335,88 +1608,21 @@
                             const tags = values[2] ? values[2].split(';') : [];
                             if (content) {
                                 this.add(content, tags, 'import');
+                                count++;
                             }
                         }
-                        return lines.length - 1;
                     }
                     
-                    if (Array.isArray(imported)) {
-                        imported.forEach(item => {
-                            this.add(
-                                item.content || item.text || '',
-                                item.tags || [],
-                                'import'
-                            );
-                        });
-                        return imported.length;
-                    }
+                    return count;
                 } catch (e) {
                     console.error('Import failed:', e);
                     throw e;
                 }
-                return 0;
-            }
-
-            // ------------------------------------------------------------------------
-            // Voice Integration (Web Speech API)
-            // ------------------------------------------------------------------------
-
-            initVoice() {
-                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                    return false;
-                }
-                
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                this.recognition = new SpeechRecognition();
-                this.recognition.continuous = true;
-                this.recognition.interimResults = true;
-                this.recognition.lang = 'en-US';
-                
-                this.synthesis = window.speechSynthesis;
-                this.isListening = false;
-                
-                return true;
-            }
-
-            startVoiceListening(onResult, onEnd) {
-                if (!this.recognition) return false;
-                
-                this.recognition.onresult = (event) => {
-                    const transcript = Array.from(event.results)
-                        .map(result => result[0].transcript)
-                        .join('');
-                    
-                    if (event.results[0].isFinal) {
-                        if (onResult) onResult(transcript);
-                    }
-                };
-
-                this.recognition.onend = () => {
-                    this.isListening = false;
-                    if (onEnd) onEnd();
-                };
-
-                this.recognition.start();
-                this.isListening = true;
-                return true;
-            }
-
-            stopVoiceListening() {
-                if (this.recognition && this.isListening) {
-                    this.recognition.stop();
-                    this.isListening = false;
-                }
-            }
-
-            speak(text) {
-                if (!this.synthesis) return;
-                const utterance = new SpeechSynthesisUtterance(text);
-                this.synthesis.speak(utterance);
             }
         }
 
         // ============================================================================
-        // UI CONTROLLER
+        // UI CONTROLLER - IMPROVED
         // ============================================================================
 
         class EchoUI {
@@ -1550,9 +1756,6 @@
                 this.voiceToggle.addEventListener('change', (e) => {
                     this.echo.config.ENABLE_VOICE = e.target.checked;
                     this.echo.saveConfig();
-                    if (e.target.checked) {
-                        this.initVoice();
-                    }
                 });
 
                 this.analysisToggle.addEventListener('change', (e) => {
@@ -1594,7 +1797,6 @@
             renderMemories() {
                 let memories = this.echo.getAll();
                 
-                // Apply filters
                 if (this.currentFilter === 'favorites') {
                     memories = memories.filter(m => m.favorite);
                 } else if (this.currentFilter === 'recent') {
@@ -1774,50 +1976,63 @@
             }
 
             // ------------------------------------------------------------------------
-            // Voice
+            // IMPROVED VOICE HANDLING
             // ------------------------------------------------------------------------
 
-            initVoice() {
-                if (!this.echo.initVoice()) {
-                    this.showToast('Voice input not supported in this browser', 'error');
-                    this.voiceToggle.checked = false;
-                    return false;
-                }
-                return true;
-            }
-
-            toggleVoiceInput() {
-                if (!this.echo.config.ENABLE_VOICE) {
-                    this.showToast('Enable voice in settings first', 'warning');
-                    return;
-                }
-
-                if (!this.echo.recognition) {
-                    if (!this.initVoice()) return;
-                }
-
+            async toggleVoiceInput() {
                 const btn = document.getElementById('voice-input-btn');
                 
                 if (this.echo.isListening) {
                     this.echo.stopVoiceListening();
                     btn.classList.remove('voice-active');
                     btn.innerHTML = '<i class="fas fa-microphone"></i> Voice';
-                } else {
-                    this.echo.startVoiceListening(
-                        (text) => {
-                            document.getElementById('add-content').value = text;
-                            this.echo.stopVoiceListening();
-                            btn.classList.remove('voice-active');
-                            btn.innerHTML = '<i class="fas fa-microphone"></i> Voice';
-                            this.openModal('add');
-                        },
-                        () => {
-                            btn.classList.remove('voice-active');
-                            btn.innerHTML = '<i class="fas fa-microphone"></i> Voice';
+                    return;
+                }
+
+                // Show loading state
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Requesting...';
+                
+                const result = await this.echo.startVoiceListening(
+                    // onResult
+                    (text) => {
+                        document.getElementById('add-content').value = text;
+                        this.openModal('add');
+                        this.showToast('Voice captured! Click Save to store.', 'success');
+                    },
+                    // onEnd
+                    () => {
+                        btn.classList.remove('voice-active');
+                        btn.innerHTML = '<i class="fas fa-microphone"></i> Voice';
+                    },
+                    // onError
+                    (error) => {
+                        let message = '';
+                        switch(error) {
+                            case 'denied':
+                            case 'permission_denied':
+                                message = 'Microphone access denied. Please allow in browser settings.';
+                                break;
+                            case 'no_microphone':
+                                message = 'No microphone found on this device.';
+                                break;
+                            case 'no_speech':
+                                message = 'No speech detected. Please try again.';
+                                break;
+                            default:
+                                message = 'Voice input failed. Please try again.';
                         }
-                    );
+                        this.showToast(message, 'error');
+                        btn.classList.remove('voice-active');
+                        btn.innerHTML = '<i class="fas fa-microphone"></i> Voice';
+                    }
+                );
+
+                if (result) {
                     btn.classList.add('voice-active');
                     btn.innerHTML = '<i class="fas fa-stop"></i> Stop';
+                    this.showToast('Listening... Speak now', 'info');
+                } else {
+                    btn.innerHTML = '<i class="fas fa-microphone"></i> Voice';
                 }
             }
 
@@ -1862,11 +2077,11 @@
             }
 
             // ------------------------------------------------------------------------
-            // Analysis
+            // IMPROVED ANALYSIS
             // ------------------------------------------------------------------------
 
             runAnalysis() {
-                const topic = document.getElementById('analyze-topic').value;
+                const topic = document.getElementById('analyze-topic').value.trim();
                 const days = parseInt(document.getElementById('analyze-days').value) || 365;
                 
                 if (!topic) {
@@ -1875,7 +2090,13 @@
                 }
 
                 const result = this.echo.analyzeTopic(topic, days);
-                document.getElementById('analysis-result').innerHTML = result.replace(/\n/g, '<br>');
+                
+                // Format result with proper line breaks and styling
+                const formattedResult = result
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n/g, '<br>');
+                
+                document.getElementById('analysis-result').innerHTML = formattedResult;
             }
 
             // ------------------------------------------------------------------------
@@ -1925,14 +2146,15 @@
             }
 
             checkFeatures() {
-                // Set toggle states from config
                 this.voiceToggle.checked = this.echo.config.ENABLE_VOICE;
                 this.analysisToggle.checked = this.echo.config.ENABLE_ANALYSIS;
                 
-                // Check for voice support
+                // Check voice support
                 if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
                     this.voiceToggle.disabled = true;
-                    document.querySelector('[for="voice-toggle"]').textContent += ' (not supported)';
+                    const label = document.querySelector('[for="voice-toggle"]') || 
+                                 document.querySelector('.feature-toggle span');
+                    if (label) label.innerHTML += ' (not supported)';
                 }
             }
         }
@@ -1944,7 +2166,7 @@
         let ui;
         document.addEventListener('DOMContentLoaded', () => {
             ui = new EchoUI();
-            window.ui = ui; // For onclick handlers
+            window.ui = ui;
         });
     </script>
 </body>
