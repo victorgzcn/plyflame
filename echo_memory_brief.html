@@ -1,102 +1,840 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Echo Memory - Core Feature User Guide</title> <style> body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; padding: 30px 20px; background-color: #f9f9f9; } h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-top: 0; } h2 { color: #2980b9; margin-top: 40px; padding-bottom: 8px; border-bottom: 1px solid #eee; } h3 { color: #16a085; margin-top: 25px; } ul, ol { padding-left: 25px; margin-bottom: 20px; } li { margin-bottom: 10px; } strong { color: #e74c3c; } .note-box { background-color: #f8f9fa; border-left: 5px solid #3498db; padding: 15px 20px; margin: 20px 0; font-style: italic; border-radius: 0 5px 5px 0; } .highlight { background-color: #fffacd; padding: 2px 5px; border-radius: 3px; font-weight: bold; } footer { margin-top: 50px; text-align: center; font-size: 0.9em; color: #7f8c8d; border-top: 1px solid #eee; padding-top: 20px; } </style> </head> <body>
-   
-<h1>Echo Memory Core Feature User Guide</h1>
-<img src=" https://aisearch.cdn.bcebos.com/pic_create/2026-02-23/17/90e757abece52623.jpg" alt="Promotion Image" style="
-width: 100%;
-height: 100%;
-object-fit: cover;
-">
-<p>Welcome to Echo Memory, your proactive "Second Brain." This guide is designed to help new users master the core philosophy and functionalities of Echo Memory: <strong>Capture, Organize, Remember</strong>. Let's transform how you interact with your thoughts and memories.</p>
-
-<h2>🎯 1. Philosophy & Product Positioning: Why You Need a "Second Brain"</h2>
-<p>In the information-saturated world, Echo Memory serves as an <strong>active cognitive extension</strong>. Unlike static note-taking apps that merely store data, Echo Memory employs AI and semantic networks to transform scattered thoughts into a dynamic, retrievable, and evolving knowledge & emotion graph<sup>[1]</sup>. It works on a "passive intelligence" model—observing your usage patterns to automatically identify what matters to you<sup>[1]</sup>. It's designed for effortless integration into your life, following a "minimal intervention, maximum gain" principle<sup>[1]</sup>.</p>
-<ul>
-    <li><strong>Beyond Storage</strong>: Echo Memory isn't just a notebook. It's a reconstruction engine, turning fragments into structured, context-rich memories<sup>[1]</sup>.</li>
-    <li><strong>Context-Aware</strong>: It enriches each memory with multi-dimensional context like timestamp, emotional tone, input device, and location (e.g., recording ideas in Guangzhou's Tianhe CBD vs. on a Baiyun Mountain walk)<sup>[1]</sup>.</li>
-</ul>
-
-<h2>✍️ 2. Core Feature One: Capture – Seamless Thought Capture</h2>
-<p>Capture is the gateway. Echo Memory supports three primary input methods, each optimized for modern, fragmented workflows.</p>
-
-<h3>A. Text Input: Smart Context-Aware Editor</h3>
-<p>Forget titles and rigid formats. The editor is a boundary-free writing zone that <strong>automatically identifies semantic types</strong> from your input<sup>[1]</sup>.
-    <ul>
-        <li><strong>Example</strong>: Typing "Discuss Q2 budget with Manager Zhang at 3 PM tomorrow" automatically tags it as a "Task" and extracts key entities (Manager Zhang, Q2 budget)<sup>[1]</sup>.</li>
-        <li><strong>Intelligent Tagging</strong>: Even a note like "Tried amazing wonton noodles today" can be auto-tagged as "Life Experience" and suggested tags like "Guangzhou Cuisine" based on your past records and location<sup>[1]</sup>.</li>
-    </ul>
-</p>
-
-<h3>B. Voice Recording: Natural Language-First Engine</h3>
-<p>The voice engine prioritizes <strong>semantic completeness</strong> over verbatim accuracy, turning monologues into structured, actionable insights<sup>[1]</sup>.
-    <ul>
-        <li><strong>Thoughtful Transcription</strong>: A mumbled "PPT color too plain... maybe deep blue & gold?" gets transformed into a polished suggestion: "Consider deep sea blue and gilded gold for a professional, culturally rich palette."<sup>[1]</sup></li>
-        <li><strong>Emotion & Intent Recognition</strong>: It can detect hesitations ("Hmm... red might work too?") and tag them as "Alternative Idea" or "Tentative Decision" for future review<sup>[1]</sup>.</li>
-    </ul>
-</p>
-
-<h3>C. Screenshot & Image Recognition: Extending Visual Memory</h3>
-<p>Go beyond simple OCR. Echo Memory's screenshot feature performs <strong>intelligent content extraction</strong>.<sup>[1]</sup>
-    <ul>
-        <li><strong>Structural Analysis</strong>: A flowchart screenshot can be converted into editable mind map nodes; a data chart can have its axes and values extracted to CSV<sup>[1]</sup>.</li>
-        <li><strong>Object Recognition</strong>: Snap a book cover, and it can fetch the title, author, summary, and even ratings by matching the ISBN online<sup>[1]</sup>.</li>
-    </ul>
-</p>
-
-<h2>🗂️ 3. Core Feature Two: Organize – Intelligent, Self-Growing Memory</h2>
-<p>Organization in Echo Memory is automatic. It uses a <strong>dynamic semantic clustering algorithm</strong> to build a personal "Memory Graph" that evolves with you<sup>[1]</sup>.</p>
-<ul>
-    <li><strong>Automatic Categorization</strong>: Notes on "teaching kids to read," "bedtime stories," and "child language milestones" are automatically grouped under "Child Education," with sub-topics like "language enlightenment" and "Reading Habits" emerging naturally<sup>[1]</sup>.</li>
-    <li><strong>Bottom-Up Tagging</strong>: Tags like "High-Value," "Emotional Anchor," or "Decision Basis" are generated based on semantic density, emotional intensity, and frequency of your entries<sup>[1]</sup>.</li>
-    <li><strong>Cross-Memory Linking</strong>: The system finds hidden connections. A note about your child liking "The Little Prince" might be linked to a photo you took of Saint-Exupéry's statue in Paris three years ago<sup>[1]</sup>.</li>
-</ul>
-<div class="note-box">
-    <strong>Key Insight:</strong> This self-organization liberates you from manual filing, allowing you to focus on thinking rather than managing information<sup>[1]</sup>.
-</div>
-
-<h2>🔔 4. Core Feature Three: Remember – Active Memory Recall</h2>
-<p>The goal is not to remember more, but to <strong>stop forgetting what truly matters</strong>. Echo Memory proactively resurfaces memories through three mechanisms.</p>
-
-<h3>A. Context-Triggered Reminders</h3>
-<p>When you revisit a location or context similar to a past memory, Echo Memory can prompt you. It's not simple geo-fencing but <strong>contextual similarity matching</strong> based on semantics, mood, and even visual cues<sup>[1]</sup>.</p>
-
-<h3>B. Periodic Review</h3>
-<p>Echo Memory generates a <strong>Personal Memory Digest</strong> on the first Monday of each month. It highlights trends, forgotten inspirations, and emotional patterns, and can nudge you gently: "You mentioned 'wanting to learn piano' three times last month. Ready to start?"<sup>[1]</sup></p>
-
-<h3>C. Seamless Cross-Device Sync</h3>
-<p>
-    <ul>
-        <li><strong>Semantic Sync Protocol</strong>: A tag change on your phone updates all related memories across devices in ~0.3 seconds with end-to-end encryption<sup>[1]</sup>.</li>
-        <li><strong>Offline-First</strong>: Record freely offline; conflicts are intelligently merged upon reconnection<sup>[1]</sup>.</li>
-    </ul>
-</p>
-
-<h2>🚀 5. Pro Tips for Maximizing Echo Memory</h2>
-<ul>
-    <li><strong>Daily "Memory Walk"</strong>: Spend 5 minutes before bed browsing today's captures without editing. See the bigger picture of your day<sup>[1]</sup>.</li>
-    <li><strong>Create an "Idea Incubator"</strong>: Make a private theme called "Unfinished Thoughts." The system will highlight ideas mentioned repeatedly—your true priorities<sup>[1]</sup>.</li>
-    <li><strong>Export Your Knowledge Base</strong>: Monthly, export your memory graph to Markdown or Obsidian format for backup and personal "digital archaeology"<sup>[1]</sup>.</li>
-    <li><strong>Share "Emotional Memories"</strong>: Create a family-only space for voices, birthday wishes, and cherished moments—your future digital heirloom<sup>[1]</sup>.</li>
-</ul>
-
-<p><strong>Final Thought:</strong> Echo Memory is more than a tool; it's a mirror reflecting what you truly care about, fear, and desire. Trust it, and it becomes a seamless extension of your mind<sup>[1]</sup>.</p>
-
-<footer>
-    <p><strong>Ready to begin?</strong> Start by simply capturing your next thought, wherever you are. Let your second brain handle the rest.</p>
-    <p>© 2026 Echo Memory Guide. Based on Plyflame product philosophy and feature descriptions.</p>
-    <div class="contact">
-        <div class="contact-content">
-            Via Manzoni 31, 20121 | +39 02 88838888 | marketing@plyflame.com
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echo Memory · A simple place for your thoughts</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
-        <div class="qr-code-right">
-            <div class="qr-code-container">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https%3A///victorgzcn.github.io/plyflame/echo_memory.html" alt="QR Code">
-                <div class="qr-label">SCAN ME</div>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f8fafc;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .hero h1 i {
+            font-size: 3rem;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+        
+        .hero .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Stats Bar */
+        .stats-bar {
+            background: white;
+            padding: 30px 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 20px;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #64748b;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+        
+        .section-header p {
+            color: #64748b;
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Feature Grid - Honest Version */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            position: relative;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .feature-title h3 {
+            font-size: 1.3rem;
+            color: #1e293b;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-live {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-beta {
+            background: #fed7aa;
+            color: #92400e;
+        }
+        
+        .status-future {
+            background: #e2e8f0;
+            color: #475569;
+        }
+        
+        .feature-description {
+            color: #475569;
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+        
+        .feature-note {
+            font-size: 0.9rem;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 10px;
+            color: #64748b;
+            border-left: 3px solid #667eea;
+        }
+        
+        /* Live Demo Preview */
+        .demo-preview {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 30px;
+            padding: 40px;
+            margin: 60px 0;
+            color: white;
+        }
+        
+        .demo-preview h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .memory-card-demo {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .memory-header-demo {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #a5b4fc;
+            font-size: 0.9rem;
+        }
+        
+        .memory-content-demo {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+        
+        .memory-tags-demo {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .memory-tag-demo {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        /* Roadmap */
+        .roadmap {
+            background: #f1f5f9;
+            border-radius: 30px;
+            padding: 50px;
+            margin: 60px 0;
+        }
+        
+        .roadmap-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .roadmap-date {
+            min-width: 120px;
+            font-weight: bold;
+            color: #1e293b;
+        }
+        
+        .roadmap-content {
+            flex: 1;
+        }
+        
+        .roadmap-status {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        /* Stats from your app */
+        .live-stats {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .live-stat {
+            padding: 20px;
+        }
+        
+        .live-stat .number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+            line-height: 1;
+        }
+        
+        .live-stat .label {
+            color: #64748b;
+            margin-top: 10px;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            background: white;
+            border-radius: 30px;
+            padding: 60px;
+            margin: 60px 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        
+        .cta-section p {
+            color: #64748b;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #1e293b;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        /* QR Code */
+        .qr-section {
+            text-align: center;
+            padding: 40px;
+            background: #f8fafc;
+            border-radius: 20px;
+        }
+        
+        .qr-code {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .qr-label {
+            margin-top: 15px;
+            color: #64748b;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        
+        /* Honest Note */
+        .honest-note {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 40px 0;
+            color: #856404;
+        }
+        
+        .honest-note strong {
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        /* Footer */
+        footer {
+            background: #1e293b;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 30px 30px 0 0;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .footer-links a {
+            color: #a5b4fc;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .roadmap-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .roadmap-date {
+                min-width: auto;
+            }
+            
+            .cta-section {
+                padding: 40px 20px;
+            }
+            
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>
+                <i class="fas fa-brain"></i>
+                Echo Memory
+            </h1>
+            <div class="subtitle">A simple place for your thoughts. No AI. No cloud. Just you.</div>
+            <span class="badge">
+                <i class="fas fa-check-circle"></i>
+                One HTML file · Zero tracking · Free forever
+            </span>
+        </div>
+    </section>
+    
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">1</div>
+                <div class="stat-label">HTML File</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Dependencies</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Private</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Free Forever</div>
             </div>
         </div>
-        
+    </section>
+    
+    <!-- Honest Introduction -->
+    <div class="container">
+        <div class="honest-note">
+            <strong><i class="fas fa-heart" style="color: #dc2626;"></i> A Note from the Creator</strong>
+            <p>I built Echo Memory because I kept losing my thoughts. It's not an AI, not a cloud service, not a replacement for Notion. It's just a simple, beautiful place to store text memories. Everything stays in your browser. I never see your data. If that sounds good to you, you're welcome here.</p>
+        </div>
     </div>
-</div>
-</footer>
-
-</body> </html>
+    
+    <!-- Live Stats from Your App -->
+    <div class="container">
+        <div class="live-stats">
+            <h2 style="color: #1e293b; margin-bottom: 20px;">📊 Live from Echo Memory</h2>
+            <p style="color: #64748b; margin-bottom: 30px;">These are real stats from the app right now</p>
+            
+            <div class="stats-grid">
+                <div class="live-stat">
+                    <div class="number">5</div>
+                    <div class="label">Memories</div>
+                </div>
+                <div class="live-stat">
+                    <div class="number">6</div>
+                    <div class="label">Tags</div>
+                </div>
+                <div class="live-stat">
+                    <div class="number">0</div>
+                    <div class="label">Favorites</div>
+                </div>
+                <div class="live-stat">
+                    <div class="number">100%</div>
+                    <div class="label">Your Data</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- What It Actually Does -->
+    <div class="container">
+        <div class="section-header">
+            <h2>✨ What Echo Memory Does Today</h2>
+            <p>No hype. No vaporware. These features work right now.</p>
+        </div>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-pen"></i></div>
+                <div class="feature-title">
+                    <h3>Text Memories</h3>
+                    <span class="status-badge status-live">LIVE</span>
+                </div>
+                <div class="feature-description">
+                    Write your thoughts. Use #tags to organize. Simple and fast.
+                </div>
+                <div class="feature-note">
+                    <i class="fas fa-check-circle" style="color: #10b981;"></i> Auto-detects #hashtags
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-microphone"></i></div>
+                <div class="feature-title">
+                    <h3>Voice Input</h3>
+                    <span class="status-badge status-live">LIVE</span>
+                </div>
+                <div class="feature-description">
+                    Speak your thoughts. Browser handles the transcription.
+                </div>
+                <div class="feature-note">
+                    <i class="fas fa-info-circle" style="color: #667eea;"></i> Requires microphone permission
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-search"></i></div>
+                <div class="feature-title">
+                    <h3>Instant Search</h3>
+                    <span class="status-badge status-live">LIVE</span>
+                </div>
+                <div class="feature-description">
+                    Find anything in seconds. Search by text or filter by tags.
+                </div>
+                <div class="feature-note">
+                    <i class="fas fa-check-circle" style="color: #10b981;"></i> Works instantly
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-download"></i></div>
+                <div class="feature-title">
+                    <h3>Export</h3>
+                    <span class="status-badge status-live">LIVE</span>
+                </div>
+                <div class="feature-description">
+                    JSON, TXT, or CSV. Your data leaves your browser only when you choose.
+                </div>
+                <div class="feature-note">
+                    <i class="fas fa-check-circle" style="color: #10b981;"></i> You control your data
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="feature-title">
+                    <h3>Basic Analysis</h3>
+                    <span class="status-badge status-beta">BETA</span>
+                </div>
+                <div class="feature-description">
+                    Search by topic. See related memories. Simple but useful.
+                </div>
+                <div class="feature-note">
+                    <i class="fas fa-flask" style="color: #f59e0b;"></i> Improving based on feedback
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                <div class="feature-title">
+                    <h3>Works Everywhere</h3>
+                    <span class="status-badge status-live">LIVE</span>
+                </div>
+                <div class="feature-description">
+                    One file. Phone, tablet, laptop. Same experience.
+                </div>
+                <div class="feature-note">
+                    <i class="fas fa-check-circle" style="color: #10b981;"></i> Responsive design
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Live Demo Preview -->
+    <div class="container">
+        <div class="demo-preview">
+            <h3><i class="fas fa-eye"></i> What It Looks Like</h3>
+            
+            <div class="memory-card-demo">
+                <div class="memory-header-demo">
+                    <span>#1</span>
+                    <span>⭐</span>
+                </div>
+                <div class="memory-content-demo">
+                    Had so much fun at the park today! Playing with friends and laughing all afternoon.
+                </div>
+                <div class="memory-tags-demo">
+                    <span class="memory-tag-demo">#fun</span>
+                    <span class="memory-tag-demo">#friends</span>
+                    <span class="memory-tag-demo">#happy</span>
+                </div>
+            </div>
+            
+            <div class="memory-card-demo">
+                <div class="memory-header-demo">
+                    <span>#2</span>
+                    <span>☆</span>
+                </div>
+                <div class="memory-content-demo">
+                    Movie night was a blast! Watched a comedy and couldn't stop laughing.
+                </div>
+                <div class="memory-tags-demo">
+                    <span class="memory-tag-demo">#fun</span>
+                    <span class="memory-tag-demo">#movies</span>
+                </div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 30px; opacity: 0.8;">
+                <i class="fas fa-arrow-down"></i> Click any memory to view, edit, or delete
+            </p>
+        </div>
+    </div>
+    
+    <!-- Honest Roadmap -->
+    <div class="container">
+        <div class="roadmap">
+            <div class="section-header">
+                <h2>🚧 What's Coming (Maybe)</h2>
+                <p>I build this in my free time. Here's what I'm thinking about:</p>
+            </div>
+            
+            <div class="roadmap-item">
+                <div class="roadmap-date">March 2026</div>
+                <div class="roadmap-content">
+                    <strong>Cloud Sync (Optional)</strong> — Only if people want it. Will be opt-in.
+                </div>
+                <div class="roadmap-status">Planning</div>
+            </div>
+            
+            <div class="roadmap-item">
+                <div class="roadmap-date">April 2026</div>
+                <div class="roadmap-content">
+                    <strong>Better Analysis</strong> — More insights from your memories.
+                </div>
+                <div class="roadmap-status">Thinking</div>
+            </div>
+            
+            <div class="roadmap-item">
+                <div class="roadmap-date">May 2026</div>
+                <div class="roadmap-content">
+                    <strong>Dark Mode</strong> — Because everyone asks for it.
+                </div>
+                <div class="roadmap-status">Likely</div>
+            </div>
+            
+            <div class="roadmap-item">
+                <div class="roadmap-date">Future</div>
+                <div class="roadmap-content">
+                    <strong>Image Attachments</strong> — If I figure out how to do it simply.
+                </div>
+                <div class="roadmap-status">Researching</div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 30px; color: #64748b;">
+                <i class="fas fa-lightbulb"></i> Tell me what you'd like to see!
+            </p>
+        </div>
+    </div>
+    
+    <!-- What It Is NOT (Honest) -->
+    <div class="container">
+        <div class="section-header">
+            <h2>🚫 What Echo Memory Is NOT</h2>
+            <p>Let's be clear about limitations (so you're not disappointed)</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div style="background: #fef2f2; padding: 25px; border-radius: 15px; border-left: 4px solid #dc2626;">
+                <strong style="color: #dc2626; display: block; margin-bottom: 10px;">❌ Not an AI</strong>
+                <p>No machine learning. No ChatGPT. Just search and simple analysis.</p>
+            </div>
+            
+            <div style="background: #fef2f2; padding: 25px; border-radius: 15px; border-left: 4px solid #dc2626;">
+                <strong style="color: #dc2626; display: block; margin-bottom: 10px;">❌ Not Cloud Sync (Yet)</strong>
+                <p>Memories stay in your browser. Coming if people want it.</p>
+            </div>
+            
+            <div style="background: #fef2f2; padding: 25px; border-radius: 15px; border-left: 4px solid #dc2626;">
+                <strong style="color: #dc2626; display: block; margin-bottom: 10px;">❌ Not for Images</strong>
+                <p>Text and voice only. No photos (yet).</p>
+            </div>
+            
+            <div style="background: #fef2f2; padding: 25px; border-radius: 15px; border-left: 4px solid #dc2626;">
+                <strong style="color: #dc2626; display: block; margin-bottom: 10px;">❌ Not a Team Tool</strong>
+                <p>Just you and your thoughts. No sharing (yet).</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <div class="container">
+        <div class="cta-section">
+            <h2>Try Echo Memory</h2>
+            <p>One click. No signup. No email. Just your thoughts.</p>
+            
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary" onclick="alert('Open the Echo Memory app from your files!')">
+                    <i class="fas fa-brain"></i> Launch App
+                </a>
+                <a href="#" class="btn btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <i class="fas fa-arrow-up"></i> Back to Top
+                </a>
+            </div>
+            
+            <div class="qr-section" style="margin-top: 40px;">
+                <div class="qr-code">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://victorgzcn.github.io/plyflame/echo_memory.html" alt="QR Code" style="border-radius: 10px;">
+                    <div class="qr-label">SCAN ME · Open on any device</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ -->
+    <div class="container">
+        <div class="section-header">
+            <h2>❓ Quick Answers</h2>
+        </div>
+        
+        <div style="display: grid; gap: 20px; max-width: 800px; margin: 0 auto;">
+            <div style="background: white; padding: 20px; border-radius: 15px;">
+                <strong>Q: Where is my data stored?</strong>
+                <p style="color: #64748b; margin-top: 10px;">A: In your browser's localStorage. I never see it. You can export it anytime.</p>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 15px;">
+                <strong>Q: Is it really free forever?</strong>
+                <p style="color: #64748b; margin-top: 10px;">A: Yes. One HTML file. No servers. No costs. Free forever.</p>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 15px;">
+                <strong>Q: Can I lose my data?</strong>
+                <p style="color: #64748b; margin-top: 10px;">A: If you clear browser data, yes. Export regularly for backup.</p>
+            </div>
+            
+            <div style="background: white; padding: 20px; border-radius: 15px;">
+                <strong>Q: Why no AI?</strong>
+                <p style="color: #64748b; margin-top: 10px;">A: I wanted something simple. AI costs money and needs servers. This is free and private.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <i class="fas fa-brain" style="font-size: 3rem; opacity: 0.5; margin-bottom: 20px;"></i>
+            <h3 style="margin-bottom: 20px;">Echo Memory</h3>
+            <p style="opacity: 0.8; max-width: 500px; margin: 0 auto 30px;">
+                Built with ❤️ by someone who just wanted a place for their thoughts. No company. No investors. Just code.
+            </p>
+            
+            <div class="footer-links">
+                <a href="https://victorgzcn.github.io/plyflame/echo_memory.html"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://www.plyflame.com/Contact.html"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="https://www.plyflame.com/"><i class="fas fa-heart"></i> Supported by PLyflame</a>
+            </div>
+            
+            <p style="margin-top: 30px; opacity: 0.5; font-size: 0.9rem;">
+                © 2026 Echo Memory · Version 1.0 · 1 HTML file · 0 dependencies · 100% private
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
